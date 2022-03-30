@@ -1,6 +1,8 @@
 ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YY';
 
 DROP TABLE Osoba CASCADE CONSTRAINTS;
+DROP TABLE Zakaznik CASCADE CONSTRAINTS;
+DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
 DROP TABLE Rezervace CASCADE CONSTRAINTS;
 DROP TABLE Vypujcka CASCADE CONSTRAINTS;
 DROP TABLE Nahravka CASCADE CONSTRAINTS;
@@ -16,6 +18,22 @@ CREATE TABLE Osoba(
     telefonni_cislo NUMERIC(12) UNIQUE,
     email VARCHAR(50) UNIQUE,
     adresa VARCHAR(50));
+
+CREATE TABLE Zakaznik(
+    id_zakaznika NUMERIC(7,0));
+
+ALTER TABLE Zakaznik ADD CONSTRAINT FK_zakaznik_osoba FOREIGN KEY (id_zakaznika) REFERENCES Osoba;
+
+
+CREATE TABLE Zamestnanec(
+    id_zamestnance NUMERIC(7,0),
+    bankovni_ucet VARCHAR(20),
+    opravneni VARCHAR(20),
+    datum_nastupu DATE NOT NULL,
+    datum_ukonceni_PP DATE);
+
+ALTER TABLE Zamestnanec ADD CONSTRAINT FK_zamestnanec_osoba FOREIGN KEY (id_zamestnance) REFERENCES Osoba;
+
 
 CREATE TABLE Rezervace(
     id_rezervace NUMERIC(7,0) PRIMARY KEY,
@@ -45,6 +63,8 @@ CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
 
 SELECT * FROM Osoba;
+SELECT * FROM Zakaznik;
+SELECT * FROM Zamestnanec;
 SELECT * FROM Rezervace;
 SELECT * FROM Vypujcka;
 SELECT * FROM Nahravka;
