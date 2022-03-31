@@ -98,7 +98,7 @@ ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_nahravka FOREIGN KEY (id_nahra
 
 CREATE TABLE Vypujcka(
     id_vypujcky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
-    datum_od DATE DEFAULT CURRENT_DATE,
+    datum_od DATE DEFAULT CURRENT_DATE, /* test me */
     datum_do DATE NOT NULL,
     datum_vraceni DATE,
     cena NUMERIC(5,2),
@@ -130,15 +130,67 @@ INSERT INTO Jazyk
 INSERT INTO Jazyk
     VALUES('Čeština');
 INSERT INTO Jazyk
+    VALUES('Slovenština');
+INSERT INTO Jazyk
     VALUES('Angličtina');
+INSERT INTO Jazyk
+    VALUES('Čínština');
+INSERT INTO Jazyk
+    VALUES('Španělština');
+INSERT INTO Jazyk
+    VALUES('Arabština');
+INSERT INTO Jazyk
+    VALUES('Ruština');
+INSERT INTO Jazyk
+    VALUES('Japonština');
+INSERT INTO Jazyk
+    VALUES('Francouzština');
+INSERT INTO Jazyk
+    VALUES('Němčina');
 
 INSERT INTO Zneni
+    VALUES('Čeština');
+INSERT INTO Zneni
+    VALUES('Slovenština');
+INSERT INTO Zneni
     VALUES('Angličtina');
+INSERT INTO Zneni
+    VALUES('Čínština');
+INSERT INTO Zneni
+    VALUES('Španělština');
+INSERT INTO Zneni
+    VALUES('Arabština');
+INSERT INTO Zneni
+    VALUES('Ruština');
+INSERT INTO Zneni
+    VALUES('Japonština');
+INSERT INTO Zneni
+    VALUES('Francouzština');
+INSERT INTO Zneni
+    VALUES('Němčina');
 
 INSERT INTO Titulky
     VALUES('není');
 INSERT INTO Titulky
     VALUES('Čeština');
+INSERT INTO Titulky
+    VALUES('Slovenština');
+INSERT INTO Titulky
+    VALUES('Angličtina');
+INSERT INTO Titulky
+    VALUES('Čínština');
+INSERT INTO Titulky
+    VALUES('Španělština');
+INSERT INTO Titulky
+    VALUES('Arabština');
+INSERT INTO Titulky
+    VALUES('Ruština');
+INSERT INTO Titulky
+    VALUES('Japonština');
+INSERT INTO Titulky
+    VALUES('Francouzština');
+INSERT INTO Titulky
+    VALUES('Němčina');
 
 INSERT INTO Nahravka
     VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
@@ -149,6 +201,24 @@ INSERT INTO Zanr
     VALUES('Drama');
 INSERT INTO Zanr
     VALUES('Životopisný');
+INSERT INTO Zanr
+    VALUES('Fantasy');
+INSERT INTO Zanr
+    VALUES('Dokument');
+INSERT INTO Zanr
+    VALUES('Komedie');
+INSERT INTO Zanr
+    VALUES('Horor');
+INSERT INTO Zanr
+    VALUES('Muzikál');
+INSERT INTO Zanr
+    VALUES('Animace');
+INSERT INTO Zanr
+    VALUES('Thriller');
+INSERT INTO Zanr
+    VALUES('Rodinný');
+INSERT INTO Zanr
+    VALUES('Romantický');
 
 INSERT INTO Nahravka_Zanru
     VALUES(1, 'Drama');
