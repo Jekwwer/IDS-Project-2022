@@ -58,6 +58,17 @@ CREATE TABLE Vypujcka(
     datum_vraceni DATE,
     cena NUMERIC(5,2));
 
+CREATE TABLE Jazyk(
+    jazyk VARCHAR(15) PRIMARY KEY);
+
+CREATE TABLE Zneni(
+    jazyk_zneni VARCHAR(15) PRIMARY KEY);
+ALTER TABLE Zneni ADD CONSTRAINT FK_zneni_jazyk FOREIGN KEY (jazyk_zneni) REFERENCES Jazyk;
+
+CREATE TABLE Titulky(
+    jazyk_titulek VARCHAR(15) PRIMARY KEY);
+ALTER TABLE Titulky ADD CONSTRAINT FK_titulky_jazyk FOREIGN KEY (jazyk_titulek) REFERENCES Jazyk;
+
 CREATE TABLE Nahravka(
     id_nahravky NUMERIC(7,0) PRIMARY KEY,
     nazev VARCHAR(50) NOT NULL UNIQUE,
@@ -65,25 +76,15 @@ CREATE TABLE Nahravka(
     vekova_hranice NUMERIC(2,0),
     reziser VARCHAR(20),
     delka NUMERIC(3,0),
-    popis VARCHAR(150));
+    popis VARCHAR(150) DEFAULT '-',
+    jazyk_zneni VARCHAR(15) NOT NULL,
+    jazyk_titulek VARCHAR(15) DEFAULT 'není');
+
+ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_zneni FOREIGN KEY (jazyk_zneni) REFERENCES Zneni;
+ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_titulky FOREIGN KEY (jazyk_titulek) REFERENCES Titulky;
 
 CREATE TABLE Zanr(
     zanr VARCHAR(15) PRIMARY KEY);
-
-CREATE TABLE Jazyk(
-    jazyk VARCHAR(15) PRIMARY KEY);
-
-CREATE TABLE Zneni(
-    jazyk_zneni VARCHAR(15));
-
-ALTER TABLE Zneni ADD CONSTRAINT FK_zneni_jazyk FOREIGN KEY (jazyk_zneni) REFERENCES Jazyk;
-
-
-CREATE TABLE Titulky(
-    jazyk_titulek VARCHAR(15));
-
-ALTER TABLE Titulky ADD CONSTRAINT FK_titulky_jazyk FOREIGN KEY (jazyk_titulek) REFERENCES Jazyk;
-
 
 /* Create relation tables */
 CREATE TABLE Nahravka_Zanru(
@@ -95,24 +96,33 @@ ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zan
 
 
 /* Add values */
+INSERT INTO Jazyk
+    VALUES('není');
+INSERT INTO Jazyk
+    VALUES('Čeština');
+INSERT INTO Jazyk
+    VALUES('Angličtina');
+
+INSERT INTO Zneni
+    VALUES('Angličtina');
+
+INSERT INTO Titulky
+    VALUES('není');
+INSERT INTO Titulky
+    VALUES('Čeština');
+
 INSERT INTO Nahravka
-    VALUES(1,'Sociální síť','The Social Network', 12, 'David Fincher',120, 'asdf');
-
-INSERT INTO Jazyk
-    VALUES('angličtina');
-
-INSERT INTO Jazyk
-    VALUES('čeština');
+    VALUES(1,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
+INSERT INTO Nahravka
+    VALUES(2,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
 
 INSERT INTO Zanr
     VALUES('Drama');
-
 INSERT INTO Zanr
     VALUES('Životopisný');
 
 INSERT INTO Nahravka_Zanru
     VALUES(1, 'Drama');
-
 INSERT INTO Nahravka_Zanru
     VALUES(1, 'Životopisný');
 
@@ -131,9 +141,14 @@ SELECT * FROM Titulky;
 SELECT * FROM Nahravka_Zanru;
 
 /* Some SELECT tests */
+/* Nahravky zanru drama */
 SELECT nazev
-FROM Nahravka NATURAL JOIN NAHRAVKA_ZANRU
-WHERE zanr='Drama';
+    FROM Nahravka NATURAL JOIN NAHRAVKA_ZANRU
+    WHERE zanr='Drama';
 
+/* Nahravky v anglickem jazyce zneni */
+SELECT nazev
+    FROM Nahravka
+    WHERE jazyk_zneni='Angličtina';
 
 /* End of xshili00_xbrazd22.sql */
