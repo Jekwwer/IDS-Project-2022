@@ -1,5 +1,13 @@
+/*
+IDS PROJECT - 2nd Part
+Authors: Evgenii Shiliaev
+         Simon Brazda
+*/
+
+/* Set the needed date format */
 ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YY';
 
+/* Drop all tabels for easier script running */
 DROP TABLE Osoba CASCADE CONSTRAINTS;
 DROP TABLE Zakaznik CASCADE CONSTRAINTS;
 DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
@@ -10,8 +18,9 @@ DROP TABLE Zanr CASCADE CONSTRAINTS;
 DROP TABLE Jazyk CASCADE CONSTRAINTS;
 DROP TABLE Zneni CASCADE CONSTRAINTS;
 DROP TABLE Titulky CASCADE CONSTRAINTS;
+DROP TABLE Nahravka_Zanru CASCADE CONSTRAINTS;
 
-
+/* Create tables */
 CREATE TABLE Osoba(
     id_osoby NUMERIC(7,0) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
@@ -76,6 +85,39 @@ CREATE TABLE Titulky(
 ALTER TABLE Titulky ADD CONSTRAINT FK_titulky_jazyk FOREIGN KEY (jazyk_titulek) REFERENCES Jazyk;
 
 
+/* Create relation tables */
+CREATE TABLE Nahravka_Zanru(
+    id_nahravky NUMERIC(7,0),
+    zanr VARCHAR(15));
+
+ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
+ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zanr) REFERENCES Zanr;
+
+
+/* Add values */
+INSERT INTO Nahravka
+    VALUES(1,'Sociální síť','The Social Network', 12, 'David Fincher',120, 'asdf');
+
+INSERT INTO Jazyk
+    VALUES('angličtina');
+
+INSERT INTO Jazyk
+    VALUES('čeština');
+
+INSERT INTO Zanr
+    VALUES('Drama');
+
+INSERT INTO Zanr
+    VALUES('Životopisný');
+
+INSERT INTO Nahravka_Zanru
+    VALUES(1, 'Drama');
+
+INSERT INTO Nahravka_Zanru
+    VALUES(1, 'Životopisný');
+
+
+/* Get all tables */
 SELECT * FROM Osoba;
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
@@ -86,3 +128,12 @@ SELECT * FROM Zanr;
 SELECT * FROM Jazyk;
 SELECT * FROM Zneni;
 SELECT * FROM Titulky;
+SELECT * FROM Nahravka_Zanru;
+
+/* Some SELECT tests */
+SELECT nazev
+FROM Nahravka NATURAL JOIN NAHRAVKA_ZANRU
+WHERE zanr='Drama';
+
+
+/* End of xshili00_xbrazd22.sql */
