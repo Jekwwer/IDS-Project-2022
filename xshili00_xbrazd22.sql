@@ -54,10 +54,8 @@ CREATE TABLE Titulky(
     jazyk_titulek VARCHAR(15) PRIMARY KEY);
 ALTER TABLE Titulky ADD CONSTRAINT FK_titulky_jazyk FOREIGN KEY (jazyk_titulek) REFERENCES Jazyk;
 
-CREATE TABLE Rezervace(
-    id_rezervace NUMERIC(7,0) PRIMARY KEY,
-    stav VARCHAR(20) DEFAULT 'Zpracovává se',
-    datum DATE);
+CREATE TABLE Zanr(
+    zanr VARCHAR(15) PRIMARY KEY);
 
 CREATE TABLE Nahravka(
     id_nahravky NUMERIC(7,0) PRIMARY KEY,
@@ -81,13 +79,17 @@ CREATE TABLE Kazeta(
     porizovaci_cena INTEGER,
     datum_zarazeni DATE NOT NULL,
     datum_vyrazeni DATE);
-
 ALTER TABLE Kazeta ADD CONSTRAINT PK_kazeta PRIMARY KEY (id_nahravky, id_kazety);
 ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravky) REFERENCES Nahravka ON DELETE CASCADE;
 
-
-CREATE TABLE Zanr(
-    zanr VARCHAR(15) PRIMARY KEY);
+CREATE TABLE Rezervace(
+    id_rezervace NUMERIC(7,0) PRIMARY KEY,
+    id_zakaznika NUMERIC(7,0),
+    id_nahravky NUMERIC(7,0),
+    stav VARCHAR(20) DEFAULT 'Zpracovává se',
+    datum DATE);
+ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_zakaznik FOREIGN KEY (id_zakaznika) REFERENCES Zakaznik;
+ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 
 CREATE TABLE Vypujcka(
     id_vypujcky NUMERIC(7,0) PRIMARY KEY,
