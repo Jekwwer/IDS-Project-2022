@@ -14,6 +14,7 @@ DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
 DROP TABLE Rezervace CASCADE CONSTRAINTS;
 DROP TABLE Vypujcka CASCADE CONSTRAINTS;
 DROP TABLE Nahravka CASCADE CONSTRAINTS;
+DROP TABLE Kazeta CASCADE CONSTRAINTS;
 DROP TABLE Zanr CASCADE CONSTRAINTS;
 DROP TABLE Jazyk CASCADE CONSTRAINTS;
 DROP TABLE Zneni CASCADE CONSTRAINTS;
@@ -83,6 +84,19 @@ CREATE TABLE Nahravka(
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_zneni FOREIGN KEY (jazyk_zneni) REFERENCES Zneni;
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_titulky FOREIGN KEY (jazyk_titulek) REFERENCES Titulky;
 
+CREATE TABLE Kazeta(
+    id_nahravky NUMERIC(7,0),
+    id_kazety INTEGER,
+    sazba_vypujceni INTEGER,
+    stav VARCHAR(20) DEFAULT 'Skladem',
+    porizovaci_cena INTEGER,
+    datum_zarazeni DATE NOT NULL,
+    datum_vyrazeni DATE);
+
+ALTER TABLE Kazeta ADD CONSTRAINT PK_kazeta PRIMARY KEY (id_nahravky, id_kazety);
+ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravky) REFERENCES Nahravka ON DELETE CASCADE;
+
+
 CREATE TABLE Zanr(
     zanr VARCHAR(15) PRIMARY KEY);
 
@@ -134,6 +148,7 @@ SELECT * FROM Zamestnanec;
 SELECT * FROM Rezervace;
 SELECT * FROM Vypujcka;
 SELECT * FROM Nahravka;
+SELECT * FROM Kazeta;
 SELECT * FROM Zanr;
 SELECT * FROM Jazyk;
 SELECT * FROM Zneni;
