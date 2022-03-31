@@ -22,7 +22,7 @@ DROP TABLE Nahravka_Zanru CASCADE CONSTRAINTS;
 
 /* Create tables */
 CREATE TABLE Zakaznik(
-    id_zakaznika NUMERIC(7,0) PRIMARY KEY,
+    id_zakaznika NUMBER GENERATED ALWAYS as IDENTITY(START with 10000 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
     datum_narozeni DATE,
@@ -31,17 +31,18 @@ CREATE TABLE Zakaznik(
     adresa VARCHAR(50));
 
 CREATE TABLE Zamestnanec(
-    id_zamestnance NUMERIC(7,0) PRIMARY KEY,
+    id_zamestnance NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
     datum_narozeni DATE,
     telefonni_cislo NUMERIC(12) UNIQUE,
     email VARCHAR(50) UNIQUE,
     adresa VARCHAR(50),
-    bankovni_ucet VARCHAR(20),
+    bankovni_ucet CHAR(26), /*CHECK (  ), TODO*/
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE);
+
 
 CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
@@ -58,7 +59,7 @@ CREATE TABLE Zanr(
     zanr VARCHAR(15) PRIMARY KEY);
 
 CREATE TABLE Nahravka(
-    id_nahravky NUMERIC(7,0) PRIMARY KEY,
+    id_nahravky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     nazev VARCHAR(50) NOT NULL UNIQUE,
     nazev_v_originale VARCHAR(50),
     vekova_hranice NUMERIC(2,0),
@@ -72,8 +73,8 @@ ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_zneni FOREIGN KEY (jazyk_zneni) 
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_titulky FOREIGN KEY (jazyk_titulek) REFERENCES Titulky;
 
 CREATE TABLE Kazeta(
-    id_nahravky NUMERIC(7,0),
-    id_kazety INTEGER,
+    id_nahravky NUMBER,
+    id_kazety NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
     sazba_vypujceni INTEGER,
     stav VARCHAR(20) DEFAULT 'Skladem',
     porizovaci_cena INTEGER,
@@ -83,7 +84,7 @@ ALTER TABLE Kazeta ADD CONSTRAINT PK_kazeta PRIMARY KEY (id_nahravky, id_kazety)
 ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravky) REFERENCES Nahravka ON DELETE CASCADE;
 
 CREATE TABLE Rezervace(
-    id_rezervace NUMERIC(7,0) PRIMARY KEY,
+    id_rezervace NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     id_zakaznika NUMERIC(7,0),
     id_nahravky NUMERIC(7,0),
     stav VARCHAR(20) DEFAULT 'Zpracovává se',
@@ -92,7 +93,7 @@ ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_zakaznik FOREIGN KEY (id_zakaz
 ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 
 CREATE TABLE Vypujcka(
-    id_vypujcky NUMERIC(7,0) PRIMARY KEY,
+    id_vypujcky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     datum_od DATE,
     datum_do DATE NOT NULL,
     datum_vraceni DATE,
@@ -136,9 +137,9 @@ INSERT INTO Titulky
     VALUES('Čeština');
 
 INSERT INTO Nahravka
-    VALUES(1,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
+    VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
 INSERT INTO Nahravka
-    VALUES(2,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
+    VALUES(DEFAULT,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
 
 INSERT INTO Zanr
     VALUES('Drama');
