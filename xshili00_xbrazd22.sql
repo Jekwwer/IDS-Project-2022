@@ -25,10 +25,12 @@ CREATE TABLE Zakaznik(
     id_zakaznika NUMBER GENERATED ALWAYS as IDENTITY(START with 10000 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
-    datum_narozeni DATE,
-    telefonni_cislo NUMERIC(12) UNIQUE,
-    email VARCHAR(50) UNIQUE,
-    adresa VARCHAR(50));
+    datum_narozeni DATE, /*TRIGGER TODO*/
+    telefonni_cislo CHAR(12) UNIQUE CHECK(regexp_like(telefonni_cislo,'^[[:digit:]]{12}$')),
+    email VARCHAR(50) UNIQUE CHECK (REGEXP_LIKE (email,'^[a-zA-Z0-9.!#$%&''*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,4}$')),
+    ulice VARCHAR(20),
+    mesto VARCHAR(20),
+    psc CHAR(5) CHECK(regexp_like(psc,'^[[:digit:]]{5}$')));
 
 CREATE TABLE Zamestnanec(
     id_zamestnance NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
@@ -94,7 +96,7 @@ ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_nahravka FOREIGN KEY (id_nahra
 
 CREATE TABLE Vypujcka(
     id_vypujcky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
-    datum_od DATE,
+    datum_od DATE DEFAULT CURRENT_DATE,
     datum_do DATE NOT NULL,
     datum_vraceni DATE,
     cena NUMERIC(5,2),
@@ -151,6 +153,10 @@ INSERT INTO Nahravka_Zanru
 INSERT INTO Nahravka_Zanru
     VALUES(1, 'Životopisný');
 
+
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Evgenii', 'Shiliaev', TO_DATE('01.01.2001'), '420000000000', 'asdf-moje-posta@mail.com',
+           'Božetěchova 1/2', 'Brno', '61200');
 
 /* Get all tables */
 SELECT * FROM Zakaznik;
