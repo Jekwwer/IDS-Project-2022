@@ -8,7 +8,6 @@ Authors: Evgenii Shiliaev
 ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YY';
 
 /* Drop all tabels for easier script running */
-DROP TABLE Osoba CASCADE CONSTRAINTS;
 DROP TABLE Zakaznik CASCADE CONSTRAINTS;
 DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
 DROP TABLE Rezervace CASCADE CONSTRAINTS;
@@ -22,8 +21,8 @@ DROP TABLE Titulky CASCADE CONSTRAINTS;
 DROP TABLE Nahravka_Zanru CASCADE CONSTRAINTS;
 
 /* Create tables */
-CREATE TABLE Osoba(
-    id_osoby NUMERIC(7,0) PRIMARY KEY,
+CREATE TABLE Zakaznik(
+    id_zakaznika NUMERIC(7,0) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
     datum_narozeni DATE,
@@ -31,20 +30,18 @@ CREATE TABLE Osoba(
     email VARCHAR(50) UNIQUE,
     adresa VARCHAR(50));
 
-CREATE TABLE Zakaznik(
-    id_zakaznika NUMERIC(7,0));
-
-ALTER TABLE Zakaznik ADD CONSTRAINT FK_zakaznik_osoba FOREIGN KEY (id_zakaznika) REFERENCES Osoba;
-
-
 CREATE TABLE Zamestnanec(
-    id_zamestnance NUMERIC(7,0),
+    id_zamestnance NUMERIC(7,0) PRIMARY KEY,
+    jmeno VARCHAR(10) NOT NULL,
+    prijmeni VARCHAR(10) NOT NULL,
+    datum_narozeni DATE,
+    telefonni_cislo NUMERIC(12) UNIQUE,
+    email VARCHAR(50) UNIQUE,
+    adresa VARCHAR(50),
     bankovni_ucet VARCHAR(20),
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE);
-
-ALTER TABLE Zamestnanec ADD CONSTRAINT FK_zamestnanec_osoba FOREIGN KEY (id_zamestnance) REFERENCES Osoba;
 
 
 CREATE TABLE Rezervace(
@@ -142,7 +139,6 @@ INSERT INTO Nahravka_Zanru
 
 
 /* Get all tables */
-SELECT * FROM Osoba;
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
 SELECT * FROM Rezervace;
