@@ -43,19 +43,6 @@ CREATE TABLE Zamestnanec(
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE);
 
-
-CREATE TABLE Rezervace(
-    id_rezervace NUMERIC(7,0) PRIMARY KEY,
-    stav VARCHAR(20) DEFAULT 'Zpracovává se',
-    datum DATE);
-
-CREATE TABLE Vypujcka(
-    id_vypujcky NUMERIC(7,0) PRIMARY KEY,
-    datum_od DATE,
-    datum_do DATE NOT NULL,
-    datum_vraceni DATE,
-    cena NUMERIC(5,2));
-
 CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
 
@@ -66,6 +53,11 @@ ALTER TABLE Zneni ADD CONSTRAINT FK_zneni_jazyk FOREIGN KEY (jazyk_zneni) REFERE
 CREATE TABLE Titulky(
     jazyk_titulek VARCHAR(15) PRIMARY KEY);
 ALTER TABLE Titulky ADD CONSTRAINT FK_titulky_jazyk FOREIGN KEY (jazyk_titulek) REFERENCES Jazyk;
+
+CREATE TABLE Rezervace(
+    id_rezervace NUMERIC(7,0) PRIMARY KEY,
+    stav VARCHAR(20) DEFAULT 'Zpracovává se',
+    datum DATE);
 
 CREATE TABLE Nahravka(
     id_nahravky NUMERIC(7,0) PRIMARY KEY,
@@ -96,6 +88,25 @@ ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravk
 
 CREATE TABLE Zanr(
     zanr VARCHAR(15) PRIMARY KEY);
+
+CREATE TABLE Vypujcka(
+    id_vypujcky NUMERIC(7,0) PRIMARY KEY,
+    datum_od DATE,
+    datum_do DATE NOT NULL,
+    datum_vraceni DATE,
+    cena NUMERIC(5,2),
+    id_rezervace NUMERIC(7,0) DEFAULT NULL,
+    id_nahravky NUMERIC(7,0),
+    id_kazety INTEGER,
+    id_zakaznika NUMERIC(7,0),
+    vydano_zamestnancem NUMERIC(7,0),
+    prijato_zamestnancem NUMERIC(7,0));
+
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_rezervace FOREIGN KEY (id_rezervace) REFERENCES Zakaznik;
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_kazeta FOREIGN KEY (id_nahravky, id_kazety) REFERENCES Kazeta;
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zakaznik FOREIGN KEY (id_zakaznika) REFERENCES Zakaznik;
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_vydal FOREIGN KEY (vydano_zamestnancem) REFERENCES Zamestnanec;
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_prijal FOREIGN KEY (prijato_zamestnancem) REFERENCES Zamestnanec;
 
 /* Create relation tables */
 CREATE TABLE Nahravka_Zanru(
