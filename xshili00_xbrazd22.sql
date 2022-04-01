@@ -1,5 +1,5 @@
 /*
-IDS PROJECT - 2nd Part
+IDS PROJECT - 2nd Part (24 – Videopujcovna)
 Authors: Evgenii Shiliaev
          Simon Brazda
 */
@@ -26,23 +26,23 @@ CREATE TABLE Zakaznik(
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
     datum_narozeni DATE, /*TRIGGER TODO*/
-    telefonni_cislo CHAR(12) UNIQUE CHECK(regexp_like(telefonni_cislo,'^[[:digit:]]{12}$')),
+    telefonni_cislo CHAR(12) UNIQUE CHECK(REGEXP_LIKE(telefonni_cislo,'^[[:digit:]]{12}$')),
     email VARCHAR(50) UNIQUE CHECK (REGEXP_LIKE (email,'^[a-zA-Z0-9.!#$%&''*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,4}$')),
     ulice VARCHAR(20),
     mesto VARCHAR(20),
-    psc CHAR(5) CHECK(regexp_like(psc,'^[[:digit:]]{5}$')));
+    psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')));
 
 CREATE TABLE Zamestnanec(
     id_zamestnance NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
     datum_narozeni DATE, /*TRIGGER TODO*/
-    telefonni_cislo CHAR(12) UNIQUE CHECK(regexp_like(telefonni_cislo,'^[[:digit:]]{12}$')),
+    telefonni_cislo CHAR(12) UNIQUE CHECK(REGEXP_LIKE(telefonni_cislo,'^[[:digit:]]{12}$')),
     email VARCHAR(50) UNIQUE CHECK (REGEXP_LIKE (email,'^[a-zA-Z0-9.!#$%&''*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,4}$')),
     ulice VARCHAR(20),
     mesto VARCHAR(20),
-    psc CHAR(5) CHECK(regexp_like(psc,'^[[:digit:]]{5}$')),
-    bankovni_ucet CHAR(26), /*CHECK (  ), TODO*/
+    psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')),
+    bankovni_ucet CHAR(26), CHECK(REGEXP_LIKE(bankovni_ucet,'^[0-9]{0,6}+[-]?+[0-9]{2,10}+[\\]+[0-9]{4}$')),
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE);
@@ -228,7 +228,19 @@ INSERT INTO Nahravka_Zanru
 
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Evgenii', 'Shiliaev', TO_DATE('01.01.2001'), '420000000000', 'asdf-moje-posta@mail.com',
-           'Božetěchova 1/2', 'Brno', '61200');
+           'Božetěchova 1/2', 'Brno', '612 00');
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Pavel', 'Novák', TO_DATE('24.12.1991'), '420123123123', 'pavel.novak@neznam.cz',
+           'Krátká 432/2', 'Adamov', '679 04');
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Eva', 'Svobodová', TO_DATE('28.07.1995'), '420147258369', 'svobodova33@kmail.cz',
+           'Netroufalky 770', 'Brno', '625 00');
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Jiří', 'Černý', TO_DATE('31.05.2007'), '420741258963', 'cerny.jiri05@inlook.com',
+           'Lidická 1875/40', 'Brno', '605 00');
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Jan', 'Dvořák', TO_DATE('10.02.1999'), '420159753648', 'dvorak.honz4@protectedmail.com',
+           'Lidická 1875/40', 'Brno', '602 00');
 
 /* Get all tables */
 SELECT * FROM Zakaznik;
