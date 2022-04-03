@@ -42,10 +42,10 @@ CREATE TABLE Zamestnanec(
     ulice VARCHAR(20),
     mesto VARCHAR(20),
     psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')),
-    bankovni_ucet CHAR(26), CHECK(REGEXP_LIKE(bankovni_ucet,'^[0-9]{0,6}+[-]?+[0-9]{2,10}+[\\]+[0-9]{4}$')),
+    bankovni_ucet VARCHAR(26), CHECK(REGEXP_LIKE(bankovni_ucet,'^[[:digit:]]{0,6}+[-]?+[[:digit:]]{2,10}+[/]+[[:digit:]]{4}$')),
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
-    datum_ukonceni_PP DATE);
+    datum_ukonceni_PP DATE DEFAULT NULL);
 
 
 CREATE TABLE Jazyk(
@@ -109,7 +109,7 @@ CREATE TABLE Vypujcka(
     vydano_zamestnancem NUMERIC(7,0),
     prijato_zamestnancem NUMERIC(7,0));
 
-ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_rezervace FOREIGN KEY (id_rezervace) REFERENCES Zakaznik;
+ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_rezervace FOREIGN KEY (id_rezervace) REFERENCES Rezervace;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_kazeta FOREIGN KEY (id_nahravky, id_kazety) REFERENCES Kazeta;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zakaznik FOREIGN KEY (id_zakaznika) REFERENCES Zakaznik;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_vydal FOREIGN KEY (vydano_zamestnancem) REFERENCES Zamestnanec;
@@ -196,6 +196,19 @@ INSERT INTO Nahravka
     VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
 INSERT INTO Nahravka
     VALUES(DEFAULT,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Jexi: Láska z mobilu', 'Jexi', 12, 'Jon Lucas', 84, DEFAULT, 'Čeština', DEFAULT);
+
+INSERT INTO Kazeta
+    VALUES(2, DEFAULT, 100, DEFAULT, 80, TO_DATE('1.2.2011'), NULL);
+INSERT INTO Kazeta
+    VALUES(1, DEFAULT, 60, DEFAULT, 50, TO_DATE('1.6.2006'), NULL);
+INSERT INTO Kazeta
+    VALUES(1, DEFAULT, 60, DEFAULT, 50, TO_DATE('1.6.2006'), NULL);
+INSERT INTO Kazeta
+    VALUES(3, DEFAULT, 110, DEFAULT, 90, TO_DATE('1.2.2020'), NULL);
+INSERT INTO Kazeta
+    VALUES(3, DEFAULT, 110, DEFAULT, 90, TO_DATE('1.2.2020'), NULL);
 
 INSERT INTO Zanr
     VALUES('Drama');
@@ -224,7 +237,12 @@ INSERT INTO Nahravka_Zanru
     VALUES(1, 'Drama');
 INSERT INTO Nahravka_Zanru
     VALUES(1, 'Životopisný');
-
+INSERT INTO Nahravka_Zanru
+    VALUES(2, 'Komedie');
+INSERT INTO Nahravka_Zanru
+    VALUES(2, 'Romantický');
+INSERT INTO Nahravka_Zanru
+    VALUES(3, 'Komedie');
 
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Evgenii', 'Shiliaev', TO_DATE('01.01.2001'), '420000000000', 'asdf-moje-posta@mail.com',
@@ -241,6 +259,29 @@ INSERT INTO Zakaznik
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Jan', 'Dvořák', TO_DATE('10.02.1999'), '420159753648', 'dvorak.honz4@protectedmail.com',
            'Lidická 1875/40', 'Brno', '602 00');
+
+INSERT INTO Zamestnanec
+    VALUES(DEFAULT, 'Ladislav', 'Marek', TO_DATE('16.08.1985'), '420658495327', 'lada.marek@eznam.cz',
+            'Na náměstí 64', 'Tišnov', '666 01', '12-69821/0200', 'legislativa',
+            TO_DATE('25.03.2006'), NULL);
+INSERT INTO Zamestnanec
+    VALUES(DEFAULT, 'Jan', 'Culek', TO_DATE('23.4.1979'), '420952495427', 'jan.culk@eznam.cz', 
+            'U sloupku 16', 'Tišnov', '666 01', '25-6982165/0200', 'rezervace', 
+            TO_DATE('25.3.2006'), NULL);
+INSERT INTO Zamestnanec
+    VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1997'), '420876925327', 'marek.ciz@gemail.cz', 
+            'Plotní 69', 'Brno', '601 00', '64-9516842/0288', 'účetnictví', 
+            TO_DATE('5.5.2010'), NULL);
+
+INSERT INTO Rezervace
+    VALUES(DEFAULT, 10004, 2, DEFAULT, TO_DATE('2.4.2022'));
+INSERT INTO Rezervacesds
+    VALUES(DEFAULT, 10002, 1, 'vyřízeno', TO_DATE('31.3.2022')); /*nevyrizeno*/
+INSERT INTO Rezervace
+    VALUES(DEFAULT, 10001, 3, 'vyřízeno', TO_DATE('1.4.2022'));
+
+INSERT INTO Vypujcka
+    VALUES(DEFAULT, DEFAULT, TO_DATE('4.4.2022'), NULL, 380, 2, 1, 2, 10002, 2, NULL);
 
 /* Get all tables */
 SELECT * FROM Zakaznik;
