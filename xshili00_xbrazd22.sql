@@ -25,7 +25,7 @@ CREATE TABLE Zakaznik(
     id_zakaznika NUMBER GENERATED ALWAYS as IDENTITY(START with 10000 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
     prijmeni VARCHAR(10) NOT NULL,
-    datum_narozeni DATE, /*TRIGGER TODO*/
+    datum_narozeni DATE, /*CHECK TRIGGER TODO*/
     telefonni_cislo CHAR(12) UNIQUE CHECK(REGEXP_LIKE(telefonni_cislo,'^[[:digit:]]{12}$')),
     email VARCHAR(50) UNIQUE CHECK (REGEXP_LIKE (email,'^[a-zA-Z0-9.!#$%&''*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,4}$')),
     ulice VARCHAR(20),
@@ -46,7 +46,6 @@ CREATE TABLE Zamestnanec(
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE DEFAULT NULL);
-
 
 CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
@@ -72,7 +71,6 @@ CREATE TABLE Nahravka(
     popis VARCHAR(150) DEFAULT '-',
     jazyk_zneni VARCHAR(15) NOT NULL,
     jazyk_titulek VARCHAR(15) DEFAULT 'není');
-
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_zneni FOREIGN KEY (jazyk_zneni) REFERENCES Zneni;
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_titulky FOREIGN KEY (jazyk_titulek) REFERENCES Titulky;
 
@@ -98,7 +96,7 @@ ALTER TABLE Rezervace ADD CONSTRAINT FK_rezervace_nahravka FOREIGN KEY (id_nahra
 
 CREATE TABLE Vypujcka(
     id_vypujcky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
-    datum_od DATE DEFAULT CURRENT_DATE, /* test me */
+    datum_od DATE DEFAULT CURRENT_DATE,
     datum_do DATE NOT NULL,
     datum_vraceni DATE,
     cena NUMERIC(5,2),
@@ -108,7 +106,6 @@ CREATE TABLE Vypujcka(
     id_zakaznika NUMERIC(7,0),
     vydano_zamestnancem NUMERIC(7,0),
     prijato_zamestnancem NUMERIC(7,0));
-
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_rezervace FOREIGN KEY (id_rezervace) REFERENCES Rezervace;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_kazeta FOREIGN KEY (id_nahravky, id_kazety) REFERENCES Kazeta;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zakaznik FOREIGN KEY (id_zakaznika) REFERENCES Zakaznik;
@@ -119,7 +116,6 @@ ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_prijal FOREIGN KEY (
 CREATE TABLE Nahravka_Zanru(
     id_nahravky NUMERIC(7,0),
     zanr VARCHAR(15));
-
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zanr) REFERENCES Zanr;
 
@@ -297,11 +293,11 @@ INSERT INTO Zamestnanec
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('31.3.2022')
     FROM Zakaznik CROSS JOIN Nahravka
-    WHERE jmeno='Evgenii' AND prijmeni = 'Shiliaev' AND nazev='Jexi: Láska z mobilu';
+    WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu';
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('1.4.2022')
     FROM Zakaznik CROSS JOIN Nahravka
-    WHERE jmeno='Pavel' AND prijmeni = 'Novák' AND nazev='Forrest Gump';
+    WHERE jmeno = 'Pavel' AND prijmeni = 'Novák' AND nazev = 'Forrest Gump';
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('2.4.2022')
     FROM Zakaznik CROSS JOIN Nahravka
@@ -313,8 +309,47 @@ INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_z
     WHERE id_rezervace=1 AND Rezervace.id_nahravky=Kazeta.id_nahravky AND Kazeta.stav='Skladem' AND
       jmeno='Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
 
-/*INSERT INTO Vypujcka
-    VALUES(DEFAULT, DEFAULT, TO_DATE('4.4.2022'), NULL, 380, 2, 1, 2, 10002, 2, NULL);*/
+UPDATE Rezervace
+    SET stav = 'Vyrizeno'
+    WHERE id_rezervace = 1;
+
+UPDATE Kazeta
+    SET stav = 'Vypůjčeno'
+    WHERE id_kazety IN (
+        SELECT id_rezervace
+        FROM Vypujcka
+        WHERE id_rezervace = 1);
+
+INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('5.4.2022'), sazba_vypujceni*(TO_DATE('5.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
+    WHERE id_rezervace=2 AND Rezervace.id_nahravky=Kazeta.id_nahravky AND Kazeta.stav='Skladem' AND
+      jmeno='Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
+
+UPDATE Rezervace
+    SET stav = 'Vyřizeno'
+    WHERE id_rezervace = 2;
+
+UPDATE Kazeta
+    SET stav = 'Vypůjčeno'
+    WHERE id_kazety IN (
+        SELECT id_kazety
+        FROM Vypujcka
+        WHERE id_rezervace =2);
+
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('2.4.2022'), TO_DATE('7.4.2022'), sazba_vypujceni*(TO_DATE('7.4.2022') - TO_DATE('2.4.2022')),
+           Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Nahravka CROSS JOIN Kazeta CROSS JOIN Zamestnanec CROSS JOIN ZAKAZNIK
+    WHERE nazev = 'Jexi: Láska z mobilu' AND Kazeta.stav='Skladem' AND Zamestnanec.jmeno='Jan' AND
+          Zamestnanec.prijmeni = 'Culek' AND Zakaznik.jmeno = 'Jiří' AND Zakaznik.prijmeni='Černý' AND ROWNUM <= 1;
+
+UPDATE Kazeta
+    SET stav = 'Vypůjčeno'
+    WHERE id_kazety IN (
+        SELECT id_kazety
+        FROM Vypujcka NATURAL JOIN Zakaznik
+        WHERE datum_do = TO_DATE('7.4.2022') AND jmeno = 'Jiří' AND prijmeni='Černý');
 
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
