@@ -83,7 +83,7 @@ CREATE TABLE Kazeta(
     stav VARCHAR(20) DEFAULT 'Skladem',
     porizovaci_cena INTEGER,
     datum_zarazeni DATE NOT NULL,
-    datum_vyrazeni DATE);
+    datum_vyrazeni DATE DEFAULT NULL);
 ALTER TABLE Kazeta ADD CONSTRAINT PK_kazeta PRIMARY KEY (id_nahravky, id_kazety);
 ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravky) REFERENCES Nahravka ON DELETE CASCADE;
 
@@ -122,7 +122,6 @@ CREATE TABLE Nahravka_Zanru(
 
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zanr) REFERENCES Zanr;
-
 
 /* Add values */
 INSERT INTO Jazyk
@@ -199,16 +198,38 @@ INSERT INTO Nahravka
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Jexi: Láska z mobilu', 'Jexi', 12, 'Jon Lucas', 84, DEFAULT, 'Čeština', DEFAULT);
 
-INSERT INTO Kazeta
-    VALUES(2, DEFAULT, 100, DEFAULT, 80, TO_DATE('1.2.2011'), NULL);
-INSERT INTO Kazeta
-    VALUES(1, DEFAULT, 60, DEFAULT, 50, TO_DATE('1.6.2006'), NULL);
-INSERT INTO Kazeta
-    VALUES(1, DEFAULT, 60, DEFAULT, 50, TO_DATE('1.6.2006'), NULL);
-INSERT INTO Kazeta
-    VALUES(3, DEFAULT, 110, DEFAULT, 90, TO_DATE('1.2.2020'), NULL);
-INSERT INTO Kazeta
-    VALUES(3, DEFAULT, 110, DEFAULT, 90, TO_DATE('1.2.2020'), NULL);
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 100, 180, TO_DATE('1.2.2010')
+    FROM Nahravka
+    WHERE nazev='Forrest Gump';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 100, 180, TO_DATE('1.2.2010')
+    FROM Nahravka
+    WHERE nazev='Forrest Gump';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
+    FROM Nahravka
+    WHERE nazev='Sociální síť';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
+    FROM Nahravka
+    WHERE nazev='Sociální síť';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
+    SELECT id_nahravky, 60, 'Vyřazeno', 150, TO_DATE('1.6.2015'), TO_DATE('21.3.2017')
+    FROM Nahravka
+    WHERE nazev='Sociální síť';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev='Jexi: Láska z mobilu';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev='Jexi: Láska z mobilu';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev='Jexi: Láska z mobilu';
 
 INSERT INTO Zanr
     VALUES('Drama');
@@ -262,28 +283,39 @@ INSERT INTO Zakaznik
 
 INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Ladislav', 'Marek', TO_DATE('16.08.1985'), '420658495327', 'lada.marek@eznam.cz',
-            'Na náměstí 64', 'Tišnov', '666 01', '12-69821/0200', 'legislativa',
+            'Na náměstí 64', 'Tišnov', '666 01', '12-69821/0200', 'Legislativa',
             TO_DATE('25.03.2006'), NULL);
 INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Jan', 'Culek', TO_DATE('23.4.1979'), '420952495427', 'jan.culk@eznam.cz', 
-            'U sloupku 16', 'Tišnov', '666 01', '25-6982165/0200', 'rezervace', 
+            'U sloupku 16', 'Tišnov', '666 01', '25-6982165/0200', 'Rezervace',
             TO_DATE('25.3.2006'), NULL);
 INSERT INTO Zamestnanec
-    VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1997'), '420876925327', 'marek.ciz@gemail.cz', 
-            'Plotní 69', 'Brno', '601 00', '64-9516842/0288', 'účetnictví', 
-            TO_DATE('5.5.2010'), NULL);
+    VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1987'), '420876925327', 'marek.ciz@gemail.cz',
+            'Plotní 69', 'Brno', '601 00', '64-9516842/0288', 'Účetnictví',
+            TO_DATE('5.5.2010'), TO_DATE('7.12.2013'));
 
-INSERT INTO Rezervace
-    VALUES(DEFAULT, 10004, 2, DEFAULT, TO_DATE('2.4.2022'));
-INSERT INTO Rezervacesds
-    VALUES(DEFAULT, 10002, 1, 'vyřízeno', TO_DATE('31.3.2022')); /*nevyrizeno*/
-INSERT INTO Rezervace
-    VALUES(DEFAULT, 10001, 3, 'vyřízeno', TO_DATE('1.4.2022'));
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('31.3.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno='Evgenii' AND prijmeni = 'Shiliaev' AND nazev='Jexi: Láska z mobilu';
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('1.4.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno='Pavel' AND prijmeni = 'Novák' AND nazev='Forrest Gump';
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('2.4.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno='Eva' AND prijmeni = 'Svobodová' AND nazev='Sociální síť';
 
-INSERT INTO Vypujcka
-    VALUES(DEFAULT, DEFAULT, TO_DATE('4.4.2022'), NULL, 380, 2, 1, 2, 10002, 2, NULL);
+INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('5.4.2022'), sazba_vypujceni*(TO_DATE('5.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
+    WHERE id_rezervace=1 AND Rezervace.id_nahravky=Kazeta.id_nahravky AND Kazeta.stav='Skladem' AND
+      jmeno='Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
 
-/* Get all tables */
+/*INSERT INTO Vypujcka
+    VALUES(DEFAULT, DEFAULT, TO_DATE('4.4.2022'), NULL, 380, 2, 1, 2, 10002, 2, NULL);*/
+
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
 SELECT * FROM Rezervace;
