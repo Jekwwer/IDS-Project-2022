@@ -63,12 +63,12 @@ CREATE TABLE Zanr(
 
 CREATE TABLE Nahravka(
     id_nahravky NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
-    nazev VARCHAR(50) NOT NULL UNIQUE,
+    nazev VARCHAR(50) NOT NULL,
     nazev_v_originale VARCHAR(50),
     vekova_hranice NUMERIC(2,0),
     reziser VARCHAR(20),
     delka NUMERIC(3,0),
-    popis VARCHAR(150) DEFAULT '-',
+    popis VARCHAR(200) DEFAULT '-',
     jazyk_zneni VARCHAR(15) NOT NULL,
     jazyk_titulek VARCHAR(15) DEFAULT 'není');
 ALTER TABLE Nahravka ADD CONSTRAINT FK_nahravka_zneni FOREIGN KEY (jazyk_zneni) REFERENCES Zneni;
@@ -99,7 +99,7 @@ CREATE TABLE Vypujcka(
     datum_od DATE DEFAULT CURRENT_DATE,
     datum_do DATE NOT NULL,
     datum_vraceni DATE,
-    cena NUMERIC(5,2),
+    cena NUMERIC(7,2),
     id_rezervace NUMERIC(7,0) DEFAULT NULL,
     id_nahravky NUMERIC(7,0),
     id_kazety INTEGER,
@@ -115,7 +115,7 @@ ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_prijal FOREIGN KEY (
 /* Create relation tables */
 CREATE TABLE Nahravka_Zanru(
     id_nahravky NUMERIC(7,0),
-    zanr VARCHAR(15));
+    zanr VARCHAR(15) NOT NULL);
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zanr) REFERENCES Zanr;
 
@@ -187,12 +187,166 @@ INSERT INTO Titulky
 INSERT INTO Titulky
     VALUES('Němčina');
 
+INSERT INTO Zanr
+    VALUES('Drama');
+INSERT INTO Zanr
+    VALUES('Životopisný');
+INSERT INTO Zanr
+    VALUES('Fantasy');
+INSERT INTO Zanr
+    VALUES('Dokument');
+INSERT INTO Zanr
+    VALUES('Komedie');
+INSERT INTO Zanr
+    VALUES('Horor');
+INSERT INTO Zanr
+    VALUES('Muzikál');
+INSERT INTO Zanr
+    VALUES('Animace');
+INSERT INTO Zanr
+    VALUES('Thriller');
+INSERT INTO Zanr
+    VALUES('Rodinný');
+INSERT INTO Zanr
+    VALUES('Romantický');
+INSERT INTO Zanr
+    VALUES('Animovaný');
+INSERT INTO Zanr
+    VALUES('Dobrodružný');
+
 INSERT INTO Nahravka
-    VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT,'Angličtina', 'Čeština');
+    VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT, 'Čeština', DEFAULT);
+INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
+    SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Angličtina', 'Čeština'
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Drama'
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Životopisný'
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť';
+
 INSERT INTO Nahravka
     VALUES(DEFAULT,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Komedie'
+    FROM Nahravka
+    WHERE nazev = 'Forrest Gump';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Romantický'
+    FROM Nahravka
+    WHERE nazev = 'Forrest Gump';
+
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Jexi: Láska z mobilu', 'Jexi', 12, 'Jon Lucas', 84, DEFAULT, 'Čeština', DEFAULT);
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Komedie'
+    FROM Nahravka
+    WHERE nazev = 'Jexi: Láska z mobilu';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Kimi no na wa.', '君の名は。', 6, 'Makoto Shinkai', 106,
+            'Dva cizinci zjistí, že jsou propojeni bizarním způsobem. ' ||
+            'Když se vytvoří spojení, bude vzdálenost jedinou věcí, která je udrží od sebe?',
+            'Japonština', 'Čeština');
+INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
+    SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Angličtina', 'Čeština'
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Drama'
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Fantasy'
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Animovaný'
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Vratné lahve', 'Vratné lahve', 6, 'Jan Sverák', 104, DEFAULT, 'Čeština', DEFAULT);
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Drama'
+    FROM Nahravka
+    WHERE nazev = 'Vratné lahve';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Komedie'
+    FROM Nahravka
+    WHERE nazev = 'Vratné lahve';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'EuroTrip', 'EuroTrip', 16, 'Jeff Schaffer', 92,
+            'Absolvent střední školy, opuštěný svou přítelkyní, se rozhodne vydat se svými přáteli ' ||
+            'na zámořské dobrodružství v Evropě.', 'Čeština', DEFAULT);
+INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
+    SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Angličtina', 'Čeština'
+    FROM Nahravka
+    WHERE nazev = 'EuroTrip';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Komedie'
+    FROM Nahravka
+    WHERE nazev = 'EuroTrip';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Doručovací služba čarodějky Kiki', 'Majo no takkyûbin', 0, 'Hayao Miyazaki', 103, DEFAULT,
+            'Čeština', DEFAULT);
+INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
+    SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Japonština', 'Čeština'
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Animovaný'
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Fantasy'
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Rodinný'
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Osvícení', 'The Shining', 18, 'Jeff Schaffer', 146,
+            'Rodina míří na zimu do izolovaného hotelu, ' ||
+            'kde zlověstná přítomnost přiměje otce k násilí, ' ||
+            'zatímco jeho psychický syn vidí děsivé předtuchy z minulosti i budoucnosti.', 'Čeština', DEFAULT);
+INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
+    SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Angličtina', 'Čeština'
+    FROM Nahravka
+    WHERE nazev = 'Osvícení';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Horor'
+    FROM Nahravka
+    WHERE nazev = 'Osvícení';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Drama'
+    FROM Nahravka
+    WHERE nazev = 'Osvícení';
+
+INSERT INTO Nahravka
+    VALUES (DEFAULT, 'Aladdin', 'Aladdin', 0, 'Ron Clements', 90,
+            'Dobrosrdečný pouliční uličník a velkovezír prahnoucí po moci soupeří o kouzelnou lampu, ' ||
+            'která má moc splnit jejich nejhlubší přání.', 'Čeština', DEFAULT);
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Animovaný'
+    FROM Nahravka
+    WHERE nazev = 'Aladdin';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Komedie'
+    FROM Nahravka
+    WHERE nazev = 'Aladdin';
+INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
+    SELECT id_nahravky, 'Dobrodružný'
+    FROM Nahravka
+    WHERE nazev = 'Aladdin';
 
 INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
     SELECT id_nahravky, 100, 180, TO_DATE('1.2.2010')
@@ -226,40 +380,6 @@ INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazen
     SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
     FROM Nahravka
     WHERE nazev = 'Jexi: Láska z mobilu';
-
-INSERT INTO Zanr
-    VALUES('Drama');
-INSERT INTO Zanr
-    VALUES('Životopisný');
-INSERT INTO Zanr
-    VALUES('Fantasy');
-INSERT INTO Zanr
-    VALUES('Dokument');
-INSERT INTO Zanr
-    VALUES('Komedie');
-INSERT INTO Zanr
-    VALUES('Horor');
-INSERT INTO Zanr
-    VALUES('Muzikál');
-INSERT INTO Zanr
-    VALUES('Animace');
-INSERT INTO Zanr
-    VALUES('Thriller');
-INSERT INTO Zanr
-    VALUES('Rodinný');
-INSERT INTO Zanr
-    VALUES('Romantický');
-
-INSERT INTO Nahravka_Zanru
-    VALUES(1, 'Drama');
-INSERT INTO Nahravka_Zanru
-    VALUES(1, 'Životopisný');
-INSERT INTO Nahravka_Zanru
-    VALUES(2, 'Komedie');
-INSERT INTO Nahravka_Zanru
-    VALUES(2, 'Romantický');
-INSERT INTO Nahravka_Zanru
-    VALUES(3, 'Komedie');
 
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Evgenii', 'Shiliaev', TO_DATE('01.01.2001'), '420000000000', 'asdf-moje-posta@mail.com',
@@ -304,7 +424,7 @@ INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'Sociální síť';
 
 INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
-    SELECT TO_DATE('5.4.2022'), sazba_vypujceni*(TO_DATE('5.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    SELECT TO_DATE('01.05.2022'), sazba_vypujceni*(TO_DATE('01.05.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
     WHERE id_rezervace = 1 AND Rezervace.id_nahravky = Kazeta.id_nahravky AND Kazeta.stav = 'Skladem' AND
         jmeno = 'Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
@@ -321,7 +441,7 @@ UPDATE Kazeta
         WHERE id_rezervace = 1);
 
 INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
-    SELECT TO_DATE('5.4.2022'), sazba_vypujceni*(TO_DATE('5.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    SELECT TO_DATE('29.4.2022'), sazba_vypujceni*(TO_DATE('29.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
     WHERE id_rezervace = 2 AND Rezervace.id_nahravky = Kazeta.id_nahravky AND Kazeta.stav = 'Skladem' AND
         jmeno = 'Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
