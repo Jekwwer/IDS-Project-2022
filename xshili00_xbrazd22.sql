@@ -215,7 +215,7 @@ INSERT INTO Zanr
     VALUES('Dobrodružný');
 
 INSERT INTO Nahravka
-    VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher',120, DEFAULT, 'Čeština', DEFAULT);
+    VALUES(DEFAULT,'Sociální síť','The Social Network', 12, 'David Fincher', 120, DEFAULT, 'Čeština', DEFAULT);
 INSERT INTO Nahravka (nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, jazyk_zneni, jazyk_titulek)
     SELECT nazev, nazev_v_originale, vekova_hranice, reziser, delka, popis, 'Angličtina', 'Čeština'
     FROM Nahravka
@@ -228,9 +228,21 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Životopisný'
     FROM Nahravka
     WHERE nazev = 'Sociální síť';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
+    SELECT id_nahravky, 60, 'Vyřazeno', 150, TO_DATE('1.6.2015'), TO_DATE('21.3.2017')
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť' AND jazyk_zneni = 'Angličtina';
 
 INSERT INTO Nahravka
-    VALUES(DEFAULT,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis',142, DEFAULT, 'Angličtina', DEFAULT);
+    VALUES(DEFAULT,'Forrest Gump','Forrest Gump', 12, 'Robert Zemeckis', 142, DEFAULT, 'Angličtina', DEFAULT);
 INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Komedie'
     FROM Nahravka
@@ -238,7 +250,15 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
 INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Romantický'
     FROM Nahravka
-    WHERE nazev = 'Forrest Gump';
+    WHERE nazev = 'Forrest Gump' AND jazyk_zneni = 'Angličtina';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 100, 170, TO_DATE('1.2.2010')
+    FROM Nahravka
+    WHERE nazev = 'Forrest Gump' AND jazyk_zneni = 'Angličtina';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 100, 170, TO_DATE('1.2.2010')
+    FROM Nahravka
+    WHERE nazev = 'Forrest Gump' AND jazyk_zneni = 'Angličtina';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Jexi: Láska z mobilu', 'Jexi', 12, 'Jon Lucas', 84, DEFAULT, 'Čeština', DEFAULT);
@@ -246,6 +266,18 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Komedie'
     FROM Nahravka
     WHERE nazev = 'Jexi: Láska z mobilu';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev = 'Jexi: Láska z mobilu' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev = 'Jexi: Láska z mobilu' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
+    FROM Nahravka
+    WHERE nazev = 'Jexi: Láska z mobilu' AND jazyk_zneni = 'Čeština';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Kimi no na wa.', '君の名は。', 6, 'Makoto Shinkai', 106,
@@ -268,6 +300,22 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Animovaný'
     FROM Nahravka
     WHERE nazev = 'Kimi no na wa.';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 120, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.' AND jazyk_zneni = 'Japonština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 120, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.' AND jazyk_zneni = 'Japonština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 120, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.' AND jazyk_zneni = 'Japonština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 120, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Kimi no na wa.' AND jazyk_zneni = 'Angličtina';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Vratné lahve', 'Vratné lahve', 6, 'Jan Sverák', 104, DEFAULT, 'Čeština', DEFAULT);
@@ -279,6 +327,18 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Komedie'
     FROM Nahravka
     WHERE nazev = 'Vratné lahve';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
+    SELECT id_nahravky, 55, 'Vyřazeno', 100, TO_DATE('12.3.2009'), TO_DATE('3.11.2014')
+    FROM Nahravka
+    WHERE nazev = 'Vratné lahve' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 100, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Vratné lahve' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 100, TO_DATE('12.3.2009')
+    FROM Nahravka
+    WHERE nazev = 'Vratné lahve' AND jazyk_zneni = 'Čeština';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'EuroTrip', 'EuroTrip', 16, 'Jeff Schaffer', 92,
@@ -292,6 +352,18 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Komedie'
     FROM Nahravka
     WHERE nazev = 'EuroTrip';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
+    SELECT id_nahravky, 60, 'Vyřazeno', 121, TO_DATE('2.5.2005'), TO_DATE('17.10.2015')
+    FROM Nahravka
+    WHERE nazev = 'EuroTrip' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 121, TO_DATE('22.4.2011')
+    FROM Nahravka
+    WHERE nazev = 'EuroTrip' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 121, TO_DATE('22.4.2011')
+    FROM Nahravka
+    WHERE nazev = 'EuroTrip' AND jazyk_zneni = 'Angličtina';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Doručovací služba čarodějky Kiki', 'Majo no takkyûbin', 0, 'Hayao Miyazaki', 103, DEFAULT,
@@ -312,6 +384,22 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Rodinný'
     FROM Nahravka
     WHERE nazev = 'Doručovací služba čarodějky Kiki';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 113, TO_DATE('5.2.2001')
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 113, TO_DATE('5.2.2001')
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 113, TO_DATE('5.2.2001')
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 55, 113, TO_DATE('12.6.2003')
+    FROM Nahravka
+    WHERE nazev = 'Doručovací služba čarodějky Kiki' AND jazyk_zneni = 'Japonština';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Osvícení', 'The Shining', 18, 'Jeff Schaffer', 146,
@@ -330,6 +418,22 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Drama'
     FROM Nahravka
     WHERE nazev = 'Osvícení';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
+    SELECT id_nahravky, 70, 'Vyřazeno', 135, TO_DATE('3.9.2000'), TO_DATE('17.10.2007')
+    FROM Nahravka
+    WHERE nazev = 'Osvícení' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 70, 135, TO_DATE('21.8.2001')
+    FROM Nahravka
+    WHERE nazev = 'Osvícení' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 70, 135, TO_DATE('21.8.2001')
+    FROM Nahravka
+    WHERE nazev = 'Osvícení' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 70, 135, TO_DATE('21.8.2001')
+    FROM Nahravka
+    WHERE nazev = 'Osvícení' AND jazyk_zneni = 'Angličtina';
 
 INSERT INTO Nahravka
     VALUES (DEFAULT, 'Aladdin', 'Aladdin', 0, 'Ron Clements', 90,
@@ -347,39 +451,19 @@ INSERT INTO Nahravka_Zanru (id_nahravky, zanr)
     SELECT id_nahravky, 'Dobrodružný'
     FROM Nahravka
     WHERE nazev = 'Aladdin';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 50, 100, TO_DATE('2.2.2002')
+    FROM Nahravka
+    WHERE nazev = 'Aladdin' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 50, 100, TO_DATE('2.2.2002')
+    FROM Nahravka
+    WHERE nazev = 'Aladdin' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 50, 100, TO_DATE('2.2.2002')
+    FROM Nahravka
+    WHERE nazev = 'Aladdin' AND jazyk_zneni = 'Čeština';
 
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 100, 180, TO_DATE('1.2.2010')
-    FROM Nahravka
-    WHERE nazev = 'Forrest Gump';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 100, 180, TO_DATE('1.2.2010')
-    FROM Nahravka
-    WHERE nazev = 'Forrest Gump';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
-    FROM Nahravka
-    WHERE nazev = 'Sociální síť';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
-    FROM Nahravka
-    WHERE nazev = 'Sociální síť';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
-    SELECT id_nahravky, 60, 'Vyřazeno', 150, TO_DATE('1.6.2015'), TO_DATE('21.3.2017')
-    FROM Nahravka
-    WHERE nazev = 'Sociální síť';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
-    FROM Nahravka
-    WHERE nazev = 'Jexi: Láska z mobilu';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
-    FROM Nahravka
-    WHERE nazev = 'Jexi: Láska z mobilu';
-INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
-    SELECT id_nahravky, 110, 190, TO_DATE('1.2.2020')
-    FROM Nahravka
-    WHERE nazev = 'Jexi: Láska z mobilu';
 
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Evgenii', 'Shiliaev', TO_DATE('01.01.2001'), '420000000000', 'asdf-moje-posta@mail.com',
