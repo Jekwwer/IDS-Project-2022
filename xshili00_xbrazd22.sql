@@ -1,5 +1,5 @@
 /*
-IDS PROJECT - 2nd Part (24 – Videopujcovna)
+IDS PROJECT - 2nd and 3rd Part (24 – Videopujcovna)
 Authors: Evgenii Shiliaev
          Simon Brazda
 */
@@ -373,5 +373,14 @@ SELECT nazev
 SELECT nazev
     FROM Nahravka
     WHERE jazyk_zneni = 'Angličtina';
+
+-- TODO
+-- 2 využívající spojení dvou tabulek,
+-- 1 využívající spojení tří tabulek
+-- 2 s klauzulí GROUP BY a agregační funkcí
+-- 1 obsahující predikát EXISTS
+-- 1 s predikátem IN s vnořeným selectem (nikoliv IN s množinou konstantních dat)
+--! U každého z dotazů musí být (v komentáři SQL kódu) popsáno srozumitelně, jaká data hledá daný dotaz (jaká je jeho funkce v aplikaci).
+
 
 /* End of xshili00_xbrazd22.sql */
