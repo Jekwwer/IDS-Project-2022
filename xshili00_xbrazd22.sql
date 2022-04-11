@@ -482,12 +482,16 @@ INSERT INTO Zakaznik
             'Lidická 1875/40', 'Brno', '602 00');
 
 INSERT INTO Zamestnanec
-    VALUES(DEFAULT, 'Ladislav', 'Marek', TO_DATE('16.08.1985'), '420658495327', 'lada.marek@eznam.cz',
+    VALUES(DEFAULT, 'Ladislav', 'Novotný', TO_DATE('16.08.1985'), '420658495327', 'lada.marek@eznam.cz',
             'Na náměstí 64', 'Tišnov', '666 01', '12-69821/0200', 'Legislativa',
             TO_DATE('25.03.2006'), NULL);
 INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Jan', 'Culek', TO_DATE('23.4.1979'), '420952495427', 'jan.culk@eznam.cz', 
             'U sloupku 16', 'Tišnov', '666 01', '25-6982165/0200', 'Rezervace',
+            TO_DATE('25.3.2006'), NULL);
+INSERT INTO Zamestnanec
+    VALUES(DEFAULT, 'Marek', 'Kolář', TO_DATE('23.4.1988'), '420167203489', 'mar3k_kolar@iznam.cz',
+            'U sloupku 16', 'Tišnov', '666 01', '125655824/9600', 'Rezervace',
             TO_DATE('25.3.2006'), NULL);
 INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1987'), '420876925327', 'marek.ciz@gemail.cz',
@@ -497,63 +501,116 @@ INSERT INTO Zamestnanec
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('31.3.2022')
     FROM Zakaznik CROSS JOIN Nahravka
-    WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu';
+    WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu' AND jazyk_zneni = 'Čeština';
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('1.4.2022')
     FROM Zakaznik CROSS JOIN Nahravka
-    WHERE jmeno = 'Pavel' AND prijmeni = 'Novák' AND nazev = 'Forrest Gump';
+    WHERE jmeno = 'Pavel' AND prijmeni = 'Novák' AND nazev = 'Forrest Gump' AND jazyk_zneni = 'Angličtina';
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('2.4.2022')
     FROM Zakaznik CROSS JOIN Nahravka
-    WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'Sociální síť';
+    WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'Sociální síť' AND jazyk_zneni = 'Čeština';
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('10.4.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno = 'Jan' AND prijmeni = 'Dvořák' AND nazev = 'EuroTrip' AND jazyk_zneni = 'Čeština';
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('12.4.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno = 'Jiří' AND prijmeni = 'Černý' AND nazev = 'Osvícení' AND jazyk_zneni = 'Angličtina';
+INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
+    SELECT id_zakaznika, id_nahravky, TO_DATE('14.10.2022')
+    FROM Zakaznik CROSS JOIN Nahravka
+    WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Kimi no na wa.' AND jazyk_zneni = 'Japonština';
 
-INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
-    SELECT TO_DATE('01.05.2022'), sazba_vypujceni*(TO_DATE('01.05.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('31.3.2022'), TO_DATE('02.04.2022'), sazba_vypujceni*(TO_DATE('02.04.2022') - TO_DATE('31.3.2022')), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
     WHERE id_rezervace = 1 AND Rezervace.id_nahravky = Kazeta.id_nahravky AND Kazeta.stav = 'Skladem' AND
         jmeno = 'Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
-
 UPDATE Rezervace
     SET stav = 'Vyrizeno'
     WHERE id_rezervace = 1;
-
 UPDATE Kazeta
     SET stav = 'Vypůjčeno'
-    WHERE id_kazety IN (
-        SELECT id_rezervace
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
         FROM Vypujcka
         WHERE id_rezervace = 1);
+UPDATE Vypujcka
+    SET prijato_zamestnancem = (
+        SELECT id_zamestnance
+        FROM Zamestnanec
+        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář')
+    WHERE id_vypujcky IN (
+            SELECT id_vypujcky
+            FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+            WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu' AND datum_vraceni IS NULL);
+UPDATE Vypujcka
+    SET datum_vraceni = TO_DATE('02.04.2022')
+    WHERE id_vypujcky IN (
+        SELECT id_vypujcky
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu' AND datum_vraceni IS NULL);
+UPDATE Kazeta
+    SET stav = DEFAULT
+    WHERE (id_nahravky, id_kazety) IN (
+    SELECT id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Jexi: Láska z mobilu'
+            AND datum_vraceni = TO_DATE('02.04.2022'));
 
-INSERT INTO Vypujcka (datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
-    SELECT TO_DATE('29.4.2022'), sazba_vypujceni*(TO_DATE('29.4.2022') - TO_DATE(CURRENT_DATE)), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('1.4.2022'), TO_DATE('29.4.2022'), sazba_vypujceni*(TO_DATE('29.4.2022') - TO_DATE('1.4.2022')), id_rezervace, Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Rezervace CROSS JOIN Kazeta CROSS JOIN Zamestnanec
     WHERE id_rezervace = 2 AND Rezervace.id_nahravky = Kazeta.id_nahravky AND Kazeta.stav = 'Skladem' AND
         jmeno = 'Jan' AND prijmeni = 'Culek' AND ROWNUM <= 1;
-
 UPDATE Rezervace
     SET stav = 'Vyřizeno'
     WHERE id_rezervace = 2;
-
 UPDATE Kazeta
     SET stav = 'Vypůjčeno'
-    WHERE id_kazety IN (
-        SELECT id_kazety
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
         FROM Vypujcka
         WHERE id_rezervace = 2);
 
 INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
     SELECT TO_DATE('2.4.2022'), TO_DATE('7.4.2022'), sazba_vypujceni*(TO_DATE('7.4.2022') - TO_DATE('2.4.2022')),
-        Kazeta.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
-    FROM Nahravka CROSS JOIN Kazeta CROSS JOIN Zamestnanec CROSS JOIN ZAKAZNIK
-    WHERE nazev = 'Jexi: Láska z mobilu' AND Kazeta.stav = 'Skladem' AND Zamestnanec.jmeno = 'Jan' AND
-        Zamestnanec.prijmeni = 'Culek' AND Zakaznik.jmeno = 'Jiří' AND Zakaznik.prijmeni = 'Černý' AND ROWNUM <= 1;
-
+        K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
+    WHERE N.nazev = 'Jexi: Láska z mobilu' AND N.id_nahravky = K.id_nahravky
+        AND jazyk_zneni = 'Čeština' AND K.stav = 'Skladem'
+        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek'
+        AND Zakaznik.jmeno = 'Jiří' AND Zakaznik.prijmeni = 'Černý' AND ROWNUM <= 1;
 UPDATE Kazeta
     SET stav = 'Vypůjčeno'
-    WHERE id_kazety IN (
-        SELECT id_kazety
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
         FROM Vypujcka NATURAL JOIN Zakaznik
         WHERE datum_do = TO_DATE('7.4.2022') AND jmeno = 'Jiří' AND prijmeni = 'Černý');
+UPDATE Vypujcka
+    SET prijato_zamestnancem = (
+        SELECT id_zamestnance
+        FROM Zamestnanec
+        WHERE jmeno = 'Jan' AND prijmeni = 'Culek')
+    WHERE id_vypujcky IN (
+            SELECT id_vypujcky
+            FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+            WHERE jmeno = 'Jiří' AND prijmeni = 'Černý' AND nazev = 'Jexi: Láska z mobilu' AND datum_vraceni IS NULL);
+UPDATE Vypujcka
+    SET datum_vraceni = TO_DATE('06.04.2022')
+    WHERE id_vypujcky IN (
+        SELECT id_vypujcky
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Jiří' AND prijmeni = 'Černý' AND nazev = 'Jexi: Láska z mobilu' AND datum_vraceni IS NULL);
+UPDATE Kazeta
+    SET stav = DEFAULT
+    WHERE (id_nahravky, id_kazety) IN (
+    SELECT id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Jiří' AND prijmeni = 'Černý' AND nazev = 'Jexi: Láska z mobilu'
+            AND datum_vraceni = TO_DATE('06.04.2022'));
 
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
