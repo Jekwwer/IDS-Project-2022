@@ -236,6 +236,10 @@ INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazen
     SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
     FROM Nahravka
     WHERE nazev = 'Sociální síť' AND jazyk_zneni = 'Čeština';
+INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, porizovaci_cena, datum_zarazeni)
+    SELECT id_nahravky, 60, 150, TO_DATE('1.6.2015')
+    FROM Nahravka
+    WHERE nazev = 'Sociální síť' AND jazyk_zneni = 'Angličtina';
 INSERT INTO Kazeta (id_nahravky, sazba_vypujceni, stav, porizovaci_cena, datum_zarazeni, datum_vyrazeni)
     SELECT id_nahravky, 60, 'Vyřazeno', 150, TO_DATE('1.6.2015'), TO_DATE('21.3.2017')
     FROM Nahravka
@@ -633,6 +637,43 @@ UPDATE Kazeta
         WHERE id_rezervace = 2);
 
 INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('9.4.2022'), TO_DATE('12.4.2022'), sazba_vypujceni*(TO_DATE('12.4.2022') - TO_DATE('9.4.2022')),
+           K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
+    WHERE N.nazev = 'Sociální síť' AND N.id_nahravky = K.id_nahravky
+        AND jazyk_zneni = 'Čeština' AND K.stav = 'Skladem'
+        AND Zamestnanec.jmeno = 'Marek' AND Zamestnanec.prijmeni = 'Kolář'
+        AND Zakaznik.jmeno = 'Evgenii' AND Zakaznik.prijmeni = 'Shiliaev' AND ROWNUM <= 1;
+UPDATE Kazeta
+    SET stav = 'Vypůjčená'
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Zakaznik
+        WHERE datum_do = TO_DATE('9.4.2022') AND jmeno = 'Evgenii' AND prijmeni = 'Shiliaev');
+UPDATE Vypujcka
+    SET prijato_zamestnancem = (
+        SELECT id_zamestnance
+        FROM Zamestnanec
+        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář')
+    WHERE id_vypujcky IN (
+            SELECT id_vypujcky
+            FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+            WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Sociální síť' AND datum_vraceni IS NULL);
+UPDATE Vypujcka
+    SET datum_vraceni = TO_DATE('12.04.2022')
+    WHERE id_vypujcky IN (
+        SELECT id_vypujcky
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Sociální síť' AND datum_vraceni IS NULL);
+UPDATE Kazeta
+    SET stav = DEFAULT
+    WHERE (id_nahravky, id_kazety) IN (
+    SELECT id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev' AND nazev = 'Sociální síť'
+            AND datum_vraceni = TO_DATE('12.04.2022'));
+
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
     SELECT TO_DATE('2.4.2022'), TO_DATE('7.4.2022'), sazba_vypujceni*(TO_DATE('7.4.2022') - TO_DATE('2.4.2022')),
            K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
@@ -670,7 +711,7 @@ UPDATE Kazeta
             AND datum_vraceni = TO_DATE('06.04.2022'));
 
 INSERT INTO Vypujcka (datum_od, datum_do, cena, id_rezervace, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
-    SELECT TO_DATE('16.3.2022'), TO_DATE('20.04.2022'), sazba_vypujceni*(TO_DATE('20.4.2022') - TO_DATE('16.4.2022')),
+    SELECT TO_DATE('13.4.2022'), TO_DATE('20.4.2022'), sazba_vypujceni*(TO_DATE('20.4.2022') - TO_DATE('13.4.2022')),
            id_rezervace, K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
     FROM Rezervace R CROSS JOIN Kazeta K CROSS JOIN Zamestnanec Z
     WHERE id_rezervace = 6 AND R.id_nahravky = K.id_nahravky
@@ -686,6 +727,21 @@ UPDATE Kazeta
         FROM Vypujcka
         WHERE id_rezervace = 6);
 
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('13.4.2022'), TO_DATE('17.4.2022'), sazba_vypujceni*(TO_DATE('17.4.2022') - TO_DATE('13.4.2022')),
+           K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
+    WHERE N.nazev = 'Sociální síť' AND N.id_nahravky = K.id_nahravky
+        AND jazyk_zneni = 'Angličtina' AND K.stav = 'Skladem'
+        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek'
+        AND Zakaznik.jmeno = 'Jan' AND Zakaznik.prijmeni = 'Dvořák' AND ROWNUM <= 1;
+UPDATE Kazeta
+    SET stav = 'Vypůjčená'
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Zakaznik
+        WHERE datum_do = TO_DATE('17.4.2022') AND jmeno = 'Dvořák' AND prijmeni = 'Černý');
+
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
 SELECT * FROM Rezervace;
@@ -699,19 +755,30 @@ SELECT * FROM Titulky;
 SELECT * FROM Nahravka_Zanru;
 
 /* Some SELECT tests */
-/* Nahravky zanru drama */
-SELECT nazev
-    FROM Nahravka NATURAL JOIN NAHRAVKA_ZANRU
-    WHERE zanr = 'Drama';
-
 /* Nahravky v anglickem jazyce zneni */
-SELECT nazev
+SELECT DISTINCT nazev
     FROM Nahravka
     WHERE jazyk_zneni = 'Angličtina';
 
+-- 2 vyuzivajici spojeni dvou tabulek
+/* Nahravky zanru drama */
+SELECT DISTINCT nazev
+    FROM Nahravka NATURAL JOIN Nahravka_Zanru
+    WHERE zanr = 'Drama';
+
+-- 1 vyuzivajici spojeni tri tabulek --DONE
+/* Kteri zakaznici pujcovali nahravku Sociální síť (nezavisle na jazyce zneni) */
+SELECT DISTINCT jmeno, prijmeni, email
+    FROM Zakaznik NATURAL JOIN Vypujcka NATURAL JOIN Nahravka
+    WHERE nazev = 'Sociální síť';
+
+/* Vypujcky zakaznika Evgenii Shiliaev behem dubna 2022 */
+SELECT id_vypujcky, nazev, datum_od, datum_do, datum_vraceni
+    FROM Zakaznik NATURAL JOIN Vypujcka NATURAL JOIN Nahravka
+    WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev'
+        AND datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022');
+
 -- TODO
--- 2 využívající spojení dvou tabulek,
--- 1 využívající spojení tří tabulek
 -- 2 s klauzulí GROUP BY a agregační funkcí
 -- 1 obsahující predikát EXISTS
 -- 1 s predikátem IN s vnořeným selectem (nikoliv IN s množinou konstantních dat)
