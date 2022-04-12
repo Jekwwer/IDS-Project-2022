@@ -752,6 +752,8 @@ SELECT * FROM Zanr;
 SELECT * FROM Jazyk;
 SELECT * FROM Zneni;
 SELECT * FROM Titulky;
+-- SELECT * FROM Nahravka_Zneni;
+-- SELECT * FROM Nahravka_Titulky;
 SELECT * FROM Nahravka_Zanru;
 
 /* Some SELECT tests */
@@ -760,11 +762,15 @@ SELECT DISTINCT nazev
     FROM Nahravka
     WHERE jazyk_zneni = 'Angličtina';
 
--- 2 vyuzivajici spojeni dvou tabulek
+-- 2 vyuzivajici spojeni dvou tabulek --DONE
 /* Nahravky zanru drama */
 SELECT DISTINCT nazev
     FROM Nahravka NATURAL JOIN Nahravka_Zanru
     WHERE zanr = 'Drama';
+
+/* Seznam zákazniků, alespon jednou vypujcili kazetu*/
+SELECT DISTINCT jmeno, prijmeni, telefonni_cislo
+    FROM Zakaznik NATURAL JOIN Vypujcka;
 
 -- 1 vyuzivajici spojeni tri tabulek --DONE
 /* Kteri zakaznici pujcovali nahravku Sociální síť (nezavisle na jazyce zneni) */
@@ -778,8 +784,15 @@ SELECT id_vypujcky, nazev, datum_od, datum_do, datum_vraceni
     WHERE jmeno = 'Evgenii' AND prijmeni = 'Shiliaev'
         AND datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022');
 
--- TODO
+/* Kterych zanru jsou aktualne rezervovane nahravky? */
+SELECT DISTINCT zanr
+    FROM Rezervace NATURAL JOIN Nahravka NATURAL JOIN Nahravka_Zanru
+    WHERE stav = 'Aktivní';
+
 -- 2 s klauzulí GROUP BY a agregační funkcí
+
+-- TODO
+-- CHECK PRACE ZAM
 -- 1 obsahující predikát EXISTS
 -- 1 s predikátem IN s vnořeným selectem (nikoliv IN s množinou konstantních dat)
 --! U každého z dotazů musí být (v komentáři SQL kódu) popsáno srozumitelně, jaká data hledá daný dotaz (jaká je jeho funkce v aplikaci).
