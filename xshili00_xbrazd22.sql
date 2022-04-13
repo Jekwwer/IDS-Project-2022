@@ -587,7 +587,7 @@ INSERT INTO Vypujcka (datum_od, datum_do, cena, id_rezervace, id_nahravky, id_ka
     FROM Rezervace R CROSS JOIN Kazeta K CROSS JOIN Zamestnanec Z
     WHERE id_rezervace = 1 AND R.id_nahravky = K.id_nahravky
         AND R.stav = 'Aktivní' AND K.stav = 'Rezervovaná'
-        AND Z.jmeno = 'Jan' AND Z.prijmeni = 'Culek';
+        AND Z.jmeno = 'Jan' AND Z.prijmeni = 'Culek' AND Z.datum_ukonceni_PP IS NULL;
 UPDATE Rezervace
     SET stav = 'Vyrizeno'
     WHERE id_rezervace = 1;
@@ -601,7 +601,7 @@ UPDATE Vypujcka
     SET prijato_zamestnancem = (
         SELECT id_zamestnance
         FROM Zamestnanec
-        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář')
+        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář' AND datum_ukonceni_PP IS NULL)
     WHERE id_vypujcky IN (
             SELECT id_vypujcky
             FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
@@ -643,7 +643,7 @@ INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaz
     FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
     WHERE N.nazev = 'Sociální síť' AND N.id_nahravky = K.id_nahravky
         AND jazyk_zneni = 'Čeština' AND K.stav = 'Skladem'
-        AND Zamestnanec.jmeno = 'Marek' AND Zamestnanec.prijmeni = 'Kolář'
+        AND Zamestnanec.jmeno = 'Marek' AND Zamestnanec.prijmeni = 'Kolář' AND Zamestnanec.datum_ukonceni_PP IS NULL
         AND Zakaznik.jmeno = 'Evgenii' AND Zakaznik.prijmeni = 'Shiliaev' AND ROWNUM <= 1;
 UPDATE Kazeta
     SET stav = 'Vypůjčená'
@@ -655,7 +655,7 @@ UPDATE Vypujcka
     SET prijato_zamestnancem = (
         SELECT id_zamestnance
         FROM Zamestnanec
-        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář')
+        WHERE jmeno = 'Marek' AND prijmeni = 'Kolář' AND datum_ukonceni_PP IS NULL)
     WHERE id_vypujcky IN (
             SELECT id_vypujcky
             FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
@@ -680,7 +680,7 @@ INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaz
     FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
     WHERE N.nazev = 'Jexi: Láska z mobilu' AND N.id_nahravky = K.id_nahravky
         AND jazyk_zneni = 'Čeština' AND K.stav = 'Skladem'
-        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek'
+        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek' AND Zamestnanec.datum_ukonceni_PP IS NULL
         AND Zakaznik.jmeno = 'Jiří' AND Zakaznik.prijmeni = 'Černý' AND ROWNUM <= 1;
 UPDATE Kazeta
     SET stav = 'Vypůjčená'
@@ -692,7 +692,7 @@ UPDATE Vypujcka
     SET prijato_zamestnancem = (
         SELECT id_zamestnance
         FROM Zamestnanec
-        WHERE jmeno = 'Jan' AND prijmeni = 'Culek')
+        WHERE jmeno = 'Jan' AND prijmeni = 'Culek' AND datum_ukonceni_PP IS NULL)
     WHERE id_vypujcky IN (
             SELECT id_vypujcky
             FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
@@ -717,7 +717,7 @@ INSERT INTO Vypujcka (datum_od, datum_do, cena, id_rezervace, id_nahravky, id_ka
     FROM Rezervace R CROSS JOIN Kazeta K CROSS JOIN Zamestnanec Z
     WHERE id_rezervace = 6 AND R.id_nahravky = K.id_nahravky
         AND R.stav = 'Aktivní' AND K.stav = 'Rezervovaná'
-        AND Z.jmeno = 'Jan' AND Z.prijmeni = 'Culek';
+        AND Z.jmeno = 'Jan' AND Z.prijmeni = 'Culek' AND Z.datum_ukonceni_PP IS NULL;
 UPDATE Rezervace
     SET stav = 'Vyrizeno'
     WHERE id_rezervace = 6;
@@ -734,7 +734,7 @@ INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaz
     FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
     WHERE N.nazev = 'Sociální síť' AND N.id_nahravky = K.id_nahravky
         AND jazyk_zneni = 'Angličtina' AND K.stav = 'Skladem'
-        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek'
+        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek' AND Zamestnanec.datum_ukonceni_PP IS NULL
         AND Zakaznik.jmeno = 'Jan' AND Zakaznik.prijmeni = 'Dvořák' AND ROWNUM <= 1;
 UPDATE Kazeta
     SET stav = 'Vypůjčená'
@@ -827,7 +827,6 @@ SELECT jmeno, prijmeni, telefonni_cislo, mesto
             WHERE id_rezervace IS NULL);
 
 -- TODO
--- CHECK Jestli zamestanec ma platnou PP
 -- VICE EXAMPLE DAT
 
 /* End of xshili00_xbrazd22.sql */
