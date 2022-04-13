@@ -804,10 +804,21 @@ SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stre
     WHERE Z.mesto = 'Brno'
     GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
 
+-- 1 obsahujici predikat EXISTS
+/* Kteri zakaznici pujcovali pouze nahravky v ceskem zneni? */
+SELECT DISTINCT Z.id_zakaznika, Z.jmeno, Z.prijmeni, Z.mesto
+    FROM Vypujcka V, Nahravka N, Zakaznik Z
+    WHERE Z.id_zakaznika = V.id_zakaznika AND N.jazyk_zneni = 'Čeština'
+        AND NOT EXISTS(
+            SELECT DISTINCT id_zakaznika
+            FROM Vypujcka V NATURAL JOIN Nahravka N
+            WHERE Z.id_zakaznika = V.id_zakaznika AND N.jazyk_zneni <> 'Čeština');
+
+
+-- 1 s predikatem IN s vnorenym selectem (nikoliv IN s mnozinou konstantnich dat)
+
 -- TODO
 -- CHECK PRACE ZAM
--- 1 obsahující predikát EXISTS
--- 1 s predikátem IN s vnořeným selectem (nikoliv IN s množinou konstantních dat)
 --! U každého z dotazů musí být (v komentáři SQL kódu) popsáno srozumitelně, jaká data hledá daný dotaz (jaká je jeho funkce v aplikaci).
 
 
