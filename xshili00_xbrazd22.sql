@@ -791,10 +791,17 @@ SELECT DISTINCT zanr
     WHERE stav = 'Aktivní';
 
 -- 2 s klauzuli GROUP BY a agregacni funkci --DONE
+/* Prijem podle navravky za celou dobu serazeny sestupne */
+SELECT N.nazev, COALESCE(SUM(cena),0) Prijem
+    FROM Nahravka N LEFT JOIN Vypujcka V ON N.id_nahravky = V.id_nahravky
+    GROUP BY N.nazev
+    ORDER BY Prijem DESC;
+
 /* Soucasny prijem podle navravky za duben 2022 serazeny sestupne */
-SELECT N.nazev, SUM(cena) Prijem
-    FROM Vypujcka V NATURAL JOIN Nahravka N
-    WHERE datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022')
+SELECT N.nazev, COALESCE(SUM(cena),0) Prijem
+    FROM Nahravka N LEFT JOIN (
+        SELECT * FROM Vypujcka WHERE datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022')) V
+            ON N.id_nahravky = V.id_nahravky
     GROUP BY N.nazev
     ORDER BY Prijem DESC;
 
