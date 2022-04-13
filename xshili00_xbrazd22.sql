@@ -804,7 +804,7 @@ SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stre
     WHERE Z.mesto = 'Brno'
     GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
 
--- 1 obsahujici predikat EXISTS
+-- 1 obsahujici predikat EXISTS -- DONE
 /* Kteri zakaznici pujcovali pouze nahravky v ceskem zneni? */
 SELECT DISTINCT Z.id_zakaznika, Z.jmeno, Z.prijmeni, Z.mesto
     FROM Vypujcka V, Nahravka N, Zakaznik Z
@@ -815,11 +815,19 @@ SELECT DISTINCT Z.id_zakaznika, Z.jmeno, Z.prijmeni, Z.mesto
             WHERE Z.id_zakaznika = V.id_zakaznika AND N.jazyk_zneni <> 'Čeština');
 
 
--- 1 s predikatem IN s vnorenym selectem (nikoliv IN s mnozinou konstantnich dat)
+-- 1 s predikatem IN s vnorenym selectem (nikoliv IN s mnozinou konstantnich dat) -- DONE
+/* Kteri zakaznici pujcovali kazety pouze s rezervaci?  */
+SELECT jmeno, prijmeni, telefonni_cislo, mesto
+    FROM Zakaznik
+    WHERE id_zakaznika IN(
+            SELECT id_zakaznika FROM Vypujcka
+            WHERE id_rezervace IS NOT NULL)
+        AND id_zakaznika NOT IN(
+            SELECT id_zakaznika FROM Vypujcka
+            WHERE id_rezervace IS NULL);
 
 -- TODO
--- CHECK PRACE ZAM
---! U každého z dotazů musí být (v komentáři SQL kódu) popsáno srozumitelně, jaká data hledá daný dotaz (jaká je jeho funkce v aplikaci).
-
+-- CHECK Jestli zamestanec ma platnou PP
+-- VICE EXAMPLE DAT
 
 /* End of xshili00_xbrazd22.sql */
