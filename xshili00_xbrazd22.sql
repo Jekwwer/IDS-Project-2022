@@ -24,7 +24,7 @@ DROP TABLE Nahravka_Zanru CASCADE CONSTRAINTS;
 CREATE TABLE Zakaznik(
     id_zakaznika NUMBER GENERATED ALWAYS as IDENTITY(START with 10000 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
-    prijmeni VARCHAR(10) NOT NULL,
+    prijmeni VARCHAR(15) NOT NULL,
     datum_narozeni DATE, /*CHECK TRIGGER TODO*/
     telefonni_cislo CHAR(12) UNIQUE CHECK(REGEXP_LIKE(telefonni_cislo,'^[[:digit:]]{12}$')),
     email VARCHAR(50) UNIQUE CHECK (REGEXP_LIKE (email,'^[a-zA-Z0-9.!#$%&''*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,4}$')),
@@ -480,6 +480,9 @@ INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Eva', 'Svobodová', TO_DATE('28.07.1995'), '420147258369', 'svobodova33@kmail.cz',
             'Netroufalky 770', 'Brno', '625 00');
 INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Hana', 'Procházková', TO_DATE('12.03.1994'), '420342761789', 'procházkova.hanka@xmail.sk',
+            'Masarykova 119', 'Brno', '602 00');
+INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Jiří', 'Černý', TO_DATE('31.05.2007'), '420741258963', 'cerny.jiri05@inlook.com',
             'Lidická 1875/40', 'Brno', '605 00');
 INSERT INTO Zakaznik
@@ -502,6 +505,43 @@ INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1987'), '420876925327', 'marek.ciz@gemail.cz',
             'Plotní 69', 'Brno', '601 00', '64-9516842/0288', 'Účetnictví',
             TO_DATE('5.5.2010'), TO_DATE('7.12.2013'));
+
+INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
+    SELECT TO_DATE('23.3.2022'), TO_DATE('25.3.2022'), sazba_vypujceni*(TO_DATE('25.3.2022') - TO_DATE('23.3.2022')),
+           K.id_nahravky, id_kazety, id_zakaznika, id_zamestnance
+    FROM Nahravka N CROSS JOIN Kazeta K CROSS JOIN Zamestnanec CROSS JOIN Zakaznik
+    WHERE N.nazev = 'EuroTrip' AND N.id_nahravky = K.id_nahravky
+        AND jazyk_zneni = 'Čeština' AND K.stav = 'Skladem'
+        AND Zamestnanec.jmeno = 'Jan' AND Zamestnanec.prijmeni = 'Culek' AND Zamestnanec.datum_ukonceni_PP IS NULL
+        AND Zakaznik.jmeno = 'Eva' AND Zakaznik.prijmeni = 'Svobodová' AND ROWNUM <= 1;
+UPDATE Kazeta
+    SET stav = 'Vypůjčená'
+    WHERE (id_nahravky, id_kazety) IN (
+        SELECT  id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Zakaznik
+        WHERE datum_do = TO_DATE('25.3.2022') AND jmeno = 'Eva' AND prijmeni = 'Svobodová');
+UPDATE Vypujcka
+    SET prijato_zamestnancem = (
+        SELECT id_zamestnance
+        FROM Zamestnanec
+        WHERE jmeno = 'Jan' AND prijmeni = 'Culek' AND datum_ukonceni_PP IS NULL)
+    WHERE id_vypujcky IN (
+            SELECT id_vypujcky
+            FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+            WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'EuroTrip' AND datum_vraceni IS NULL);
+UPDATE Vypujcka
+    SET datum_vraceni = TO_DATE('25.3.2022')
+    WHERE id_vypujcky IN (
+        SELECT id_vypujcky
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'EuroTrip' AND datum_vraceni IS NULL);
+UPDATE Kazeta
+    SET stav = DEFAULT
+    WHERE (id_nahravky, id_kazety) IN (
+    SELECT id_nahravky, id_kazety
+        FROM Vypujcka NATURAL JOIN Nahravka NATURAL JOIN Zakaznik
+        WHERE jmeno = 'Eva' AND prijmeni = 'Svobodová' AND nazev = 'EuroTrip'
+            AND datum_vraceni = TO_DATE('25.3.2022'));
 
 INSERT INTO Rezervace (id_zakaznika, id_nahravky, datum)
     SELECT id_zakaznika, id_nahravky, TO_DATE('31.3.2022')
@@ -741,7 +781,7 @@ UPDATE Kazeta
     WHERE (id_nahravky, id_kazety) IN (
         SELECT  id_nahravky, id_kazety
         FROM Vypujcka NATURAL JOIN Zakaznik
-        WHERE datum_do = TO_DATE('17.4.2022') AND jmeno = 'Dvořák' AND prijmeni = 'Černý');
+        WHERE datum_do = TO_DATE('17.4.2022') AND jmeno = 'Jan' AND prijmeni = 'Dvořák');
 
 SELECT * FROM Zakaznik;
 SELECT * FROM Zamestnanec;
@@ -753,8 +793,6 @@ SELECT * FROM Zanr;
 SELECT * FROM Jazyk;
 SELECT * FROM Zneni;
 SELECT * FROM Titulky;
--- SELECT * FROM Nahravka_Zneni;
--- SELECT * FROM Nahravka_Titulky;
 SELECT * FROM Nahravka_Zanru;
 
 /* Some SELECT tests */
@@ -769,9 +807,17 @@ SELECT DISTINCT nazev
     FROM Nahravka NATURAL JOIN Nahravka_Zanru
     WHERE zanr = 'Drama';
 
-/* Seznam zákazniků, alespon jednou vypujcili kazetu*/
-SELECT DISTINCT jmeno, prijmeni, telefonni_cislo
-    FROM Zakaznik NATURAL JOIN Vypujcka;
+/* Seznam zakazniku, kteri ani jednou nevypujcili kazetu*/
+SELECT DISTINCT id_zakaznika, jmeno, prijmeni, telefonni_cislo
+    FROM Zakaznik
+    WHERE id_zakaznika NOT IN(
+        SELECT DISTINCT id_zakaznika
+        FROM Zakaznik NATURAL JOIN Vypujcka);
+
+/* Seznam zakazniku, kteri jsou z Brna a vypujcili alespon jednu kazetu*/
+SELECT DISTINCT id_zakaznika, jmeno, prijmeni, telefonni_cislo
+    FROM Zakaznik NATURAL JOIN Vypujcka
+    WHERE mesto = 'Brno';
 
 -- 1 vyuzivajici spojeni tri tabulek --DONE
 /* Kteri zakaznici pujcovali nahravku Sociální síť (nezavisle na jazyce zneni) */
