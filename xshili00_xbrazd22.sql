@@ -116,6 +116,7 @@ ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_prijal FOREIGN KEY (
 CREATE TABLE Nahravka_Zanru(
     id_nahravky NUMERIC(7,0),
     zanr VARCHAR(15) NOT NULL);
+ALTER TABLE Nahravka_Zanru ADD CONSTRAINT PK_Nahravka_Zanru PRIMARY KEY (id_nahravky, zanr);
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_nahravka FOREIGN KEY (id_nahravky) REFERENCES Nahravka;
 ALTER TABLE Nahravka_Zanru ADD CONSTRAINT FK_nahravkaZanru_zanr FOREIGN KEY (zanr) REFERENCES Zanr;
 
