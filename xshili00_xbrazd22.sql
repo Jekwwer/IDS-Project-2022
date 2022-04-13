@@ -796,7 +796,7 @@ SELECT * FROM Titulky;
 SELECT * FROM Nahravka_Zanru;
 
 /* Some SELECT tests */
-/* Nahravky v anglickem jazyce zneni */
+/* Nahravky v anglictine */
 SELECT DISTINCT nazev
     FROM Nahravka
     WHERE jazyk_zneni = 'Angličtina';
@@ -807,20 +807,20 @@ SELECT DISTINCT nazev
     FROM Nahravka NATURAL JOIN Nahravka_Zanru
     WHERE zanr = 'Drama';
 
-/* Seznam zakazniku, kteri ani jednou nevypujcili kazetu*/
+/* Seznam zakazniku, kteri si ani jednou nevypujcili kazetu*/
 SELECT DISTINCT id_zakaznika, jmeno, prijmeni, telefonni_cislo
     FROM Zakaznik
     WHERE id_zakaznika NOT IN(
         SELECT DISTINCT id_zakaznika
         FROM Zakaznik NATURAL JOIN Vypujcka);
 
-/* Seznam zakazniku, kteri jsou z Brna a vypujcili alespon jednu kazetu*/
+/* Seznam zakazniku, kteri jsou z Brna a vypujcili si alespon jednu kazetu*/
 SELECT DISTINCT id_zakaznika, jmeno, prijmeni, telefonni_cislo
     FROM Zakaznik NATURAL JOIN Vypujcka
     WHERE mesto = 'Brno';
 
 -- 1 vyuzivajici spojeni tri tabulek --DONE
-/* Kteri zakaznici pujcovali nahravku Sociální síť (nezavisle na jazyce zneni) */
+/* Kteri zakaznici si pujcovali nahravku Sociální síť (nezavisle na jazyce zneni) */
 SELECT DISTINCT jmeno, prijmeni, email
     FROM Zakaznik NATURAL JOIN Vypujcka NATURAL JOIN Nahravka
     WHERE nazev = 'Sociální síť';
@@ -837,13 +837,13 @@ SELECT DISTINCT zanr
     WHERE stav = 'Aktivní';
 
 -- 2 s klauzuli GROUP BY a agregacni funkci --DONE
-/* Prijem podle navravky za celou dobu serazeny sestupne */
+/* Prijem za celou dobu podle navravekk serazeny sestupne */
 SELECT N.nazev, COALESCE(SUM(cena),0) Prijem
     FROM Nahravka N LEFT JOIN Vypujcka V ON N.id_nahravky = V.id_nahravky
     GROUP BY N.nazev
     ORDER BY Prijem DESC;
 
-/* Soucasny prijem podle navravky za duben 2022 serazeny sestupne */
+/* Prijem za duben 2022 podle navravek serazeny sestupne */
 SELECT N.nazev, COALESCE(SUM(cena),0) Prijem
     FROM Nahravka N LEFT JOIN (
         SELECT * FROM Vypujcka WHERE datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022')) V
@@ -851,14 +851,14 @@ SELECT N.nazev, COALESCE(SUM(cena),0) Prijem
     GROUP BY N.nazev
     ORDER BY Prijem DESC;
 
-/* Stredni castka vypujcky dle zakaznika z Brna*/
+/* Stredni castka vypujcky u zakazniku z Brna*/
 SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stredni_castka_vypujcky
     FROM Vypujcka V NATURAL JOIN Zakaznik Z
     WHERE Z.mesto = 'Brno'
     GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
 
 -- 1 obsahujici predikat EXISTS -- DONE
-/* Kteri zakaznici pujcovali pouze nahravky v ceskem zneni? */
+/* Kteri zakaznici si pujcovali pouze nahravky v ceskem zneni? */
 SELECT DISTINCT Z.id_zakaznika, Z.jmeno, Z.prijmeni, Z.mesto
     FROM Vypujcka V, Nahravka N, Zakaznik Z
     WHERE Z.id_zakaznika = V.id_zakaznika AND N.jazyk_zneni = 'Čeština'
@@ -869,7 +869,7 @@ SELECT DISTINCT Z.id_zakaznika, Z.jmeno, Z.prijmeni, Z.mesto
 
 
 -- 1 s predikatem IN s vnorenym selectem (nikoliv IN s mnozinou konstantnich dat) -- DONE
-/* Kteri zakaznici pujcovali kazety pouze s rezervaci?  */
+/* Kteri zakaznici si pujcovali kazety pouze s rezervaci?  */
 SELECT jmeno, prijmeni, telefonni_cislo, mesto
     FROM Zakaznik
     WHERE id_zakaznika IN(
