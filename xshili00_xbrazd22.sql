@@ -790,7 +790,19 @@ SELECT DISTINCT zanr
     FROM Rezervace NATURAL JOIN Nahravka NATURAL JOIN Nahravka_Zanru
     WHERE stav = 'Aktivní';
 
--- 2 s klauzulí GROUP BY a agregační funkcí
+-- 2 s klauzuli GROUP BY a agregacni funkci --DONE
+/* Soucasny prijem podle navravky za duben 2022 serazeny sestupne */
+SELECT N.nazev, SUM(cena) Prijem
+    FROM Vypujcka V NATURAL JOIN Nahravka N
+    WHERE datum_od BETWEEN TO_DATE('1.4.2022') AND TO_DATE('30.4.2022')
+    GROUP BY N.nazev
+    ORDER BY Prijem DESC;
+
+/* Stredni castka vypujcky dle zakaznika z Brna*/
+SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stredni_castka_vypujcky
+    FROM Vypujcka V NATURAL JOIN Zakaznik Z
+    WHERE Z.mesto = 'Brno'
+    GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
 
 -- TODO
 -- CHECK PRACE ZAM
