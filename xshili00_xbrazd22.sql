@@ -32,7 +32,7 @@ CREATE TABLE Zakaznik(
     mesto VARCHAR(20),
     psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')));
 
-CREATE OR REPLACE TRIGGER kontrola_veku
+CREATE OR REPLACE TRIGGER kontrola_veku_zakazniku
     BEFORE INSERT OR UPDATE OF datum_narozeni ON Zakaznik
     FOR EACH ROW
 BEGIN
@@ -57,6 +57,17 @@ CREATE TABLE Zamestnanec(
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE DEFAULT NULL);
+
+CREATE OR REPLACE TRIGGER kontrola_veku_zamestnancu
+    BEFORE INSERT OR UPDATE OF datum_narozeni ON Zamestnanec
+    FOR EACH ROW
+BEGIN
+    IF(TO_DATE(sysdate) - TO_DATE(:new.datum_narozeni) < 18*365)
+    THEN
+        DBMS_OUTPUT.PUT_LINE('Věk zaměstnancu má být větší 18!');
+        RAISE VALUE_ERROR;
+    END IF;
+END;
 
 CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
