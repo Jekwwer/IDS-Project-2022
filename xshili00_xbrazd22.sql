@@ -7,7 +7,10 @@ Authors: Evgenii Shiliaev
 /* Set the needed date format */
 ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YY';
 
-/* Drop all tabels for easier script running */
+/* Drop all triggers for easier script running */
+DROP TRIGGER kontrola_veku_zakazniku;
+DROP TRIGGER kontrola_veku_zamestnancu;
+/* Drop all tables for easier script running */
 DROP TABLE Zakaznik CASCADE CONSTRAINTS;
 DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
 DROP TABLE Rezervace CASCADE CONSTRAINTS;
@@ -106,6 +109,20 @@ CREATE TABLE Kazeta(
     datum_vyrazeni DATE DEFAULT NULL);
 ALTER TABLE Kazeta ADD CONSTRAINT PK_kazeta PRIMARY KEY (id_nahravky, id_kazety);
 ALTER TABLE Kazeta ADD CONSTRAINT FK_idKazety_idNahravky FOREIGN KEY (id_nahravky) REFERENCES Nahravka ON DELETE CASCADE;
+
+CREATE OR REPLACE TRIGGER kontrola_stavu_kazety
+    BEFORE UPDATE ON Kazeta
+    FOR EACH ROW
+BEGIN
+    IF (:NEW.id_kazety = :OLD.id_kazety)
+    THEN
+        IF :OLD.stav != 'Vyřazeno'
+        THEN
+            DBMS_OUTPUT.PUT_LINE('Nelze provadet operace s vyřazenou kazetou!');
+            RAISE VALUE_ERROR;
+        END IF;
+    END IF;
+END;
 
 CREATE TABLE Rezervace(
     id_rezervace NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
@@ -530,6 +547,10 @@ INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Marek', 'Cizí', TO_DATE('30.1.1987'), '420876925327', 'marek.ciz@gemail.cz',
             'Plotní 69', 'Brno', '601 00', '64-9516842/0288', 'Účetnictví',
             TO_DATE('5.5.2010'), TO_DATE('7.12.2013'));
+INSERT INTO Zamestnanec
+    VALUES(DEFAULT, 'Evžen', 'Řízek', TO_DATE('2.4.2005'), '420748632159', 'evzen.rizek@mujmail.cz',
+            'Trchnická 9', 'Brno', '611 00', '712685439/0200', 'Rezervace',
+            TO_DATE('25.2.2022'), NULL);
 
 INSERT INTO Vypujcka (datum_od, datum_do, cena, id_nahravky, id_kazety, id_zakaznika, vydano_zamestnancem)
     SELECT TO_DATE('23.3.2022'), TO_DATE('25.3.2022'), sazba_vypujceni*(TO_DATE('25.3.2022') - TO_DATE('23.3.2022')),
