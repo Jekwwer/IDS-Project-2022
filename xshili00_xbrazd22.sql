@@ -1,5 +1,5 @@
 /*
-IDS PROJECT - 2nd and 3rd Part (24 – Videopujcovna)
+IDS PROJECT (24 – Videopujcovna)
 Authors: Evgenii Shiliaev
          Simon Brazda
 */
@@ -31,6 +31,17 @@ CREATE TABLE Zakaznik(
     ulice VARCHAR(20),
     mesto VARCHAR(20),
     psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')));
+
+CREATE OR REPLACE TRIGGER kontrola_veku
+    BEFORE INSERT OR UPDATE OF datum_narozeni ON Zakaznik
+    FOR EACH ROW
+BEGIN
+    IF(TO_DATE(sysdate) - TO_DATE(:new.datum_narozeni) < 15*365)
+    THEN
+        DBMS_OUTPUT.PUT_LINE('Věk zákazníku má být větší 15!');
+        RAISE VALUE_ERROR;
+    END IF;
+END;
 
 CREATE TABLE Zamestnanec(
     id_zamestnance NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
@@ -483,11 +494,14 @@ INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Hana', 'Procházková', TO_DATE('12.03.1994'), '420342761789', 'procházkova.hanka@xmail.sk',
             'Masarykova 119', 'Brno', '602 00');
 INSERT INTO Zakaznik
-    VALUES(DEFAULT, 'Jiří', 'Černý', TO_DATE('31.05.2007'), '420741258963', 'cerny.jiri05@inlook.com',
+    VALUES(DEFAULT, 'Jiří', 'Černý', TO_DATE('31.05.2003'), '420741258963', 'cerny.jiri05@inlook.com',
             'Lidická 1875/40', 'Brno', '605 00');
 INSERT INTO Zakaznik
     VALUES(DEFAULT, 'Jan', 'Dvořák', TO_DATE('10.02.1999'), '420159753648', 'dvorak.honz4@protectedmail.com',
             'Lidická 1875/40', 'Brno', '602 00');
+INSERT INTO Zakaznik
+    VALUES(DEFAULT, 'Jakub', 'Novotný', TO_DATE('17.11.2009'), '420362589741', 'kuba2009@mujmail.cz',
+            'Nádražní 236/2', 'Brno', '602 00');
 
 INSERT INTO Zamestnanec
     VALUES(DEFAULT, 'Ladislav', 'Novotný', TO_DATE('16.08.1985'), '420658495327', 'lada.marek@eznam.cz',
