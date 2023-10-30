@@ -1,15 +1,12 @@
-/*
-IDS PROJECT (24 – Videopujcovna)
-Authors: Evgenii Shiliaev
-         Simon Brazda
-*/
-
-/* Set the needed date format */
+/*  IDS PROJECT (24 – Videopujcovna)
+    Authors: Evgenii Shiliaev
+             Simon Brazda           */
+             
+/*    Set the needed date format    */
 ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YY';
-
 /* Drop all triggers for easier script running */
-DROP TRIGGER kontrola_veku_zakazniku;
-DROP TRIGGER kontrola_veku_zamestnancu;
+DROP TRIGGER kontrola_stavu_kazety;
+DROP TRIGGER kontrola_platneho_zamestnance;
 /* Drop all tables for easier script running */
 DROP TABLE Zakaznik CASCADE CONSTRAINTS;
 DROP TABLE Zamestnanec CASCADE CONSTRAINTS;
@@ -35,17 +32,6 @@ CREATE TABLE Zakaznik(
     mesto VARCHAR(20),
     psc CHAR(6) CHECK(REGEXP_LIKE(psc,'^[[:digit:]]{3}+[[:space:]]+[[:digit:]]{2}$')));
 
-CREATE OR REPLACE TRIGGER kontrola_veku_zakazniku
-    BEFORE INSERT OR UPDATE OF datum_narozeni ON Zakaznik
-    FOR EACH ROW
-BEGIN
-    IF(TO_DATE(sysdate) - TO_DATE(:new.datum_narozeni) < 15*365)
-    THEN
-        DBMS_OUTPUT.PUT_LINE('Věk zákazníku má být větší 15!');
-        RAISE VALUE_ERROR;
-    END IF;
-END;
-
 CREATE TABLE Zamestnanec(
     id_zamestnance NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY,
     jmeno VARCHAR(10) NOT NULL,
@@ -60,17 +46,6 @@ CREATE TABLE Zamestnanec(
     opravneni VARCHAR(20),
     datum_nastupu DATE NOT NULL,
     datum_ukonceni_PP DATE DEFAULT NULL);
-
-CREATE OR REPLACE TRIGGER kontrola_veku_zamestnancu
-    BEFORE INSERT OR UPDATE OF datum_narozeni ON Zamestnanec
-    FOR EACH ROW
-BEGIN
-    IF(TO_DATE(sysdate) - TO_DATE(:new.datum_narozeni) < 18*365)
-    THEN
-        DBMS_OUTPUT.PUT_LINE('Věk zaměstnancu má být větší 18!');
-        RAISE VALUE_ERROR;
-    END IF;
-END;
 
 CREATE TABLE Jazyk(
     jazyk VARCHAR(15) PRIMARY KEY);
@@ -150,6 +125,24 @@ ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_kazeta FOREIGN KEY (id_nahravky,
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zakaznik FOREIGN KEY (id_zakaznika) REFERENCES Zakaznik;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_vydal FOREIGN KEY (vydano_zamestnancem) REFERENCES Zamestnanec;
 ALTER TABLE Vypujcka ADD CONSTRAINT FK_vypujcka_zamestnanec_prijal FOREIGN KEY (prijato_zamestnancem) REFERENCES Zamestnanec;
+
+CREATE OR REPLACE TRIGGER kontrola_platneho_zamestnance
+    BEFORE INSERT OR UPDATE ON Vypujcka
+    FOR EACH ROW
+DECLARE
+    konec_pp_zamectnance Zamestnanec.datum_ukonceni_PP%TYPE;
+BEGIN
+    SELECT datum_ukonceni_PP    
+    INTO konec_pp_zamectnance
+    FROM Zamestnanec
+    WHERE ;
+
+    IF(konec_pp_zamectnance < Vypujcka.datum_od OR konec_pp_zamectnance < Vypujcka.datum_do)
+    THEN
+        DBMS_OUTPUT.PUT_LINE('Neplatné číslo zaměstnance!');
+        RAISE VALUE_ERROR;
+    END IF;
+END;
 
 /* Create relation tables */
 CREATE TABLE Nahravka_Zanru(
@@ -925,7 +918,32 @@ SELECT jmeno, prijmeni, telefonni_cislo, mesto
             SELECT id_zakaznika FROM Vypujcka
             WHERE id_rezervace IS NULL);
 
--- TODO
--- VICE EXAMPLE DAT
+--EXPLAIN PLAN
+EXPLAIN PLAN FOR
+SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stredni_castka_vypujcky
+    FROM Vypujcka V NATURAL JOIN Zakaznik Z
+    WHERE Z.mesto = 'Brno'
+    GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+CREATE INDEX IDX ON Zakaznik(id_zakaznika, jmeno, prijmeni);
+
+EXPLAIN PLAN FOR
+SELECT id_zakaznika, Z.jmeno, Z.prijmeni, CAST(AVG(V.cena) AS DECIMAL(5,2)) Stredni_castka_vypujcky
+    FROM Vypujcka V NATURAL JOIN Zakaznik Z
+    WHERE Z.mesto = 'Brno'
+    GROUP BY id_zakaznika, Z.jmeno, Z.prijmeni;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+DROP INDEX IDX;
+
+--OPRAVNĚNÍ
+CREATE USER xbrazd22 IDENTIFIED BY qwerty12;
+CREATE ROLE admin_role;
+GRANT ALL PRIVILEGES TO admin_role WITH ADMIN OPTION;
+ALTER ROLE admin_role ADD MEMBER xbrazd22;
+
 
 /* End of xshili00_xbrazd22.sql */
