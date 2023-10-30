@@ -78,7 +78,7 @@ Develop an SQL script to create and populate a database schema in line with [the
 
    - **Description:** Appropriate realization of the generalization/specialization relationship, tailored for a purely relational database. This requires aptly translating the aforementioned relationship and related data model entities into the relational database schema.
    - **Requirements:**
-     - Provide a clear description and justification for the chosen method of converting the generalization/specialization relationship into the relational database schema in the accompanying documentation.
+     - Provide a clear description and justification for the chosen method of converting the generalization/specialization relationship into the relational database schema in the accompanying [documentation](./xshili00_xbrazd22.pdf).
 
 4. **Script Features:**
    - **Description:** The script should also facilitate the auto-generation of primary key values for a certain table using a sequence.
