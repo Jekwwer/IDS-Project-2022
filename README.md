@@ -1,7 +1,7 @@
 # IDS-Project-2022
 
-Solution for the project from the subject _'IDS (Database Systems)'_ for the academic year 2021/22 at VUT FIT. \
-Řešení projektu z předmětu _'IDS (Databázové systémy)'_ pro akademický rok 2021/22 na VUT FIT.
+Solution for the project from the course _'[IDS (Database Systems)](https://www.fit.vut.cz/study/course/268224/)'_ for the academic year 2021/22 at VUT FIT. \
+Řešení projektu z předmětu _'[IDS (Databázové systémy)](https://www.fit.vut.cz/study/course/268224/.cs)'_ pro akademický rok 2021/22 na VUT FIT.
 
 ## Table of Contents
 
