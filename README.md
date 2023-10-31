@@ -1,149 +1,153 @@
-# IDS-Project-2022
+# IDS-Project-2022: Video Rental Database
 
-Solution for the project from the course _'[IDS (Database Systems)](https://www.fit.vut.cz/study/course/268224/)'_ for the academic year 2021/22 at VUT FIT. \
-Řešení projektu z předmětu _'[IDS (Databázové systémy)](https://www.fit.vut.cz/study/course/268224/.cs)'_ pro akademický rok 2021/22 na VUT FIT.
+> **University**: [VUT FIT](https://www.fit.vut.cz/)
+>
+> **Course**: [IDS (Database Systems)](https://www.fit.vut.cz/study/course/268224/)
+>
+> **Academic Year**: 2021/22
 
-## Table of Contents
+## 📌 Table of Contents
 
-- [Task 1: Data Modeling and Use Case Diagrams](#task-1-data-modeling-and-use-case-diagrams)
-  - [Evaluation of Task 1 Solution](#evaluation-of-task-1-solution)
-- [Task 2: SQL Script Creation for Database Schema](#task-2-sql-script-creation-for-database-schema)
-  - [Evaluation of Task 2 Solution](#evaluation-of-task-2-solution)
-- [Task 3: Advanced SQL Script Creation](#task-3-advanced-sql-script-creation)
-  - [Evaluation of Task 3 Solution](#evaluation-of-task-3-solution)
-- [Task 4: Advanced SQL Script Creation & Documentation Requirements](#task-4-advanced-sql-script-creation--documentation-requirements)
-  - [Evaluation of Task 4 Solution](#evaluation-of-task-4-solution)
+- [📢 Project Overview](#-project-overview)
+- [🔍 Task 1: Data Modeling and Use Case Diagrams](#-task-1-data-modeling-and-use-case-diagrams)
+  - [✅ Evaluation of Task 1 Solution](#-evaluation-of-task-1-solution)
+- [📜 Task 2: SQL Script Creation for Database Schema](#-task-2-sql-script-creation-for-database-schema)
+  - [✅ Evaluation of Task 2 Solution](#-evaluation-of-task-2-solution)
+- [📜 Task 3: Advanced SQL Script Creation](#-task-3-advanced-sql-script-creation)
+  - [✅ Evaluation of Task 3 Solution](#-evaluation-of-task-3-solution)
+- [📝 Task 4: Advanced SQL Script Creation & Documentation](#-task-4-advanced-sql-script-creation--documentation)
+  - [✅ Evaluation of Task 4 Solution](#-evaluation-of-task-4-solution)
 
-## Task 1: Data Modeling and Use Case Diagrams
+## 📢 Project Overview
 
-**Objective:**  
-Create and document a comprehensive data model and set of use case diagrams for a database-dependent application.
+### 🎯 Task:
+
+Design the Information System (IS) for a video rental service that caters to renting tapes to registered customers. The system will serve the dual purpose of assisting the video rental staff and providing an interface for the customers. Key functionalities include:
+
+- 🖥 **Customer Interface:** Allows customers to browse and select desired titles based on criteria and check their availability.
+- 🧑‍💼 **Staff Interface:** Enables staff to process the borrowing and return of titles.
+- 💵 **Accounting and Pricing:** The system should generate invoices for each borrowing. The rental price is contingent on the duration of the loan and is designed to incrementally increase over time. Importantly, the pricing model is subject to modifications.
+
+## 🔍 Task 1: Data Modeling and Use Case Diagrams
+
+**Objective:** Develop and document a detailed data model and a use case diagram for a database-dependent application.
 
 **Tasks:**
 
-1. **Data Model:**
+1. **Data Model:**  
+   _Description:_ Craft a data model outlining the data's structure or requirements in the database.  
+   _Format:_ Represent this model via a UML class diagram or an ER diagram using Crow's Foot notation.  
+   _Requirement:_ The model should encapsulate at least one generalization/specialization relationship. Use the proper notation for this relationship in the diagram.
 
-   - **Description:** Develop a data model capturing the structure of data or the data requirements in the database.
-   - **Format:** Express this model as either a UML class diagram or an ER diagram using the Crow's Foot notation.
-   - **Requirement:** The data model must include at least one relationship of generalization/specialization, meaning it should depict an entity/class and a specialized entity/subclass connected by a generalization/specialization relationship. Ensure the correct notation for this relationship is used in the diagram.
+2. **Use Case Diagram:**  
+   _Description:_ Develop a UML Use Case Diagram showcasing the functionality requirements of the application using the designed data model.
 
-2. **Use Case Diagram:**
-   - **Description:** Create a UML Use Case Diagram representing the requirements on the functionality provided by the application using the designed data model.
+**Submission Requirements:**
 
-**Submission:**
+- A document presenting the models along with a concise description of the data model.
+- The description should lucidly elucidate the importance of each entity set and relationship set.
 
-- Submit a document containing the above models along with a brief description of the data model.
-- The description must clearly articulate the significance of each entity set and relationship set.
+**Key Points:**
 
-**Important Notes:**
+- The generalization/specialization relationship in the data model must be properly showcased.
+- The description should be precise, clear, and offer a comprehensive understanding of the model's entities and relationships.
 
-- Ensure that the generalization/specialization relationship in the data model is properly represented and easily identifiable.
-- The description accompanying the data model should be concise, clear, and provide a comprehensive understanding of the entities and relationships within the model.
+### ✅ Evaluation of Task 1 Solution
 
-### Evaluation of Task 1 Solution
+- The _cena(price)_ is not a weak entity - each borrowing has a singular price, the rate should be at the tape.
+- ERD description is absent.
 
-- the _cena(price)_ is not a weak entity - each borrowing has one price, the rate should then be at the tape
-- the ERD description is missing
-
-Total points: **4/5**
+🟢🟢🟢🟢🔴  
+**Total Points: 4/5**
 
 ---
 
-## Task 2: SQL Script Creation for Database Schema
+## 📜 Task 2: SQL Script Creation for Database Schema
 
-**Objective:**  
-Develop an SQL script to create and populate a database schema in line with [the previously created data model](#task-1-data-modeling-and-use-case-diagrams).
+**Objective:** Construct an SQL script to generate and populate a database schema consistent with the [previously designed data model](#task-1-data-modeling-and-use-case-diagrams).
 
 **Tasks:**
 
-1. **Database Schema Creation:**
+1. **Database Schema Creation:**  
+   _Description:_ Formulate an SQL script to instantiate the database's foundational objects, including tables. Also, define integrity constraints like primary and foreign keys.  
+   _Requirements:_ The resultant schema should resonate with the [prior project's data model](#task-1-data-modeling-and-use-case-diagrams). If any anomalies are discovered in the ER diagram, rectify them to produce an enhanced solution.
 
-   - **Description:** Write an SQL script to generate the foundational objects of the database schema, including tables, along with defining integrity constraints, especially primary and foreign keys.
-   - **Requirements:**
-     - Ensure the created database schema aligns with the data model from [the previous project phase](#task-1-data-modeling-and-use-case-diagrams).
-     - It's advisable to correct any errors or shortcomings discovered in the ER diagram and make incremental changes to yield a superior solution.
+2. **Special Column Constraint:**  
+   _Description:_ Integrate at least one column in the schema with a distinct value restriction, for instance:
 
-2. **Special Column Constraint:**
+   - Social security number (RČ)
+   - Business identification number (IČ)
+   - Medical facility ID (IČPE)
+   - ISBN or ISSN
+   - Bank account number  
+     _Requirements:_ Implement a CHECK constraint to ensure only valid values populate this column.
 
-   - **Description:** Implement at least one column in the database schema tables with a special value restriction, such as:
-     - Social security number or insurance registration number (RČ)
-     - Personal/Business identification number (IČ)
-     - Medical facility ID (IČPE)
-     - ISBN or ISSN
-     - Bank account number (also consider the intricacies of account numbers)
-   - **Requirements:**
-     - Only valid values should be permitted in this column. Achieve this by implementing a CHECK constraint.
+3. **Generalization/Specialization Relationship:**  
+   _Description:_ Accurately reflect the generalization/specialization relationship, suited for a purely relational database. Convert the relationship and relevant data model entities into the database schema.  
+   _Requirements:_ Offer a clear rationale for the methodology adopted in translating the relationship into the relational database schema in the supplementary [documentation](./xshili00_xbrazd22.pdf).
 
-3. **Realization of Generalization/Specialization Relationship:**
+4. **Script Features:**  
+   _Description:_ The script should enable the auto-generation of primary key values for a specific table through a sequence.  
+   _Requirements:_ For instance, if records are inserted into a certain table and the primary key value is missing, it should be auto-generated.
 
-   - **Description:** Appropriate realization of the generalization/specialization relationship, tailored for a purely relational database. This requires aptly translating the aforementioned relationship and related data model entities into the relational database schema.
-   - **Requirements:**
-     - Provide a clear description and justification for the chosen method of converting the generalization/specialization relationship into the relational database schema in the accompanying [documentation](./xshili00_xbrazd22.pdf).
+**Essential Notes:**
 
-4. **Script Features:**
-   - **Description:** The script should also facilitate the auto-generation of primary key values for a certain table using a sequence.
-   - **Requirements:**
-     - For instance, if records are inserted into a specific table and the primary key value is undefined (i.e., NULL), the value should be auto-generated.
+- The schema's design and data integrity should mirror the [original data model](#🔍-task-1-data-modeling-and-use-case-diagrams) closely.
+- Constraints should be clearly defined to prevent inaccurate data entries.
+- Comprehensive documentation, especially concerning decisions during the translation process, is pivotal.
 
-**Important Notes:**
+### ✅ Evaluation of Task 2 Solution
 
-- Ensure that the design and data integrity of the created schema closely reflect the original data model.
-- The special value constraints should be well-defined to prevent erroneous data entry.
-- Proper documentation is essential, particularly for decisions made during the generalization/specialization translation process.
+- Primary key absent for one table; otherwise, satisfactory.
 
-### Evaluation of Task 2 Solution
-
-- missing PK for one table, otherwise OK
-
-Total points: **4.5/5**
+🟢🟢🟢🟢🟡  
+**Total Points: 4.5/5**
 
 ---
 
-## Task 3: Advanced SQL Script Creation
+## 📜 Task 3: Advanced SQL Script Creation
 
-**Objective:**  
-Develop an SQL script that first establishes the foundational objects of the database schema, populates the tables with sample data (similarly to the script in [Task 2](#task-2-sql-script-creation-for-database-schema)), and then executes several SELECT queries.
+**Objective:** Develop an SQL script that first establishes the foundational objects of the database schema, populates the tables with sample data (mirroring the script in [Task 2](#📜-task-2-sql-script-creation-for-database-schema)), and then executes a variety of SELECT queries.
 
 **Tasks:**
 
-1. **Initial Setup:**
+1. **Initial Setup:**  
+   _Description:_ Create the basic objects of the database schema and populate the tables with sample data.  
+   _Requirements:_ This initial setup should mirror the script described in [Task 2](#📜-task-2-sql-script-creation-for-database-schema).
 
-   - **Description:** Create the basic objects of the database schema and populate the tables with sample data.
-   - **Requirements:** This initial setup should mirror the script described in [Task 2](#task-2-sql-script-creation-for-database-schema).
+2. **Two-table Join Queries:**  
+   _Description:_ Formulate SQL SELECT queries that join two tables.  
+   _Requirements:_
 
-2. **Two-table Join Queries:**
+   - At least two such queries should be included in the script.
+   - For each query, provide a clear explanation (in SQL code comments) describing the function of the query within the application and the data it seeks.
 
-   - **Description:** Formulate SQL SELECT queries to join two tables.
-   - **Requirements:**
-     - At least two such queries should be included in the script.
-     - For each query, provide a clear explanation (in SQL code comments) describing the function of the query within the application and the data it seeks.
+3. **Three-table Join Query:**  
+   _Description:_ Construct an SQL SELECT query that joins three tables.  
+   _Requirements:_
 
-3. **Three-table Join Query:**
+   - The script should contain at least one such query.
+   - An accompanying comment should describe the data targeted by this query and its role within the application.
 
-   - **Description:** Construct an SQL SELECT query that joins three tables.
-   - **Requirements:**
-     - The script should contain at least one such query.
-     - An accompanying comment should describe the data targeted by this query and its role within the application.
+4. **Queries with GROUP BY and Aggregate Functions:**  
+   _Description:_ Design SQL SELECT queries using the GROUP BY clause and an aggregate function.  
+   _Requirements:_
 
-4. **Queries with GROUP BY and Aggregate Functions:**
+   - Incorporate at least two such queries into the script.
+   - Each query should have a corresponding comment that elaborates on the query's application role and the type of data it retrieves.
 
-   - **Description:** Design SQL SELECT queries using the GROUP BY clause and an aggregate function.
-   - **Requirements:**
-     - Incorporate at least two such queries into the script.
-     - Each query should have a corresponding comment that elaborates on the query's application role and the type of data it retrieves.
+5. **Query with EXISTS Predicate:**  
+   _Description:_ Devise an SQL SELECT query incorporating the EXISTS predicate.  
+   _Requirements:_
 
-5. **Query with EXISTS Predicate:**
+   - Include at least one such query in the script.
+   - A comment should detail the function of this query in the application and the data it aims to fetch.
 
-   - **Description:** Devise an SQL SELECT query incorporating the EXISTS predicate.
-   - **Requirements:**
-     - Include at least one such query in the script.
-     - A comment should detail the function of this query in the application and the data it aims to fetch.
-
-6. **Query with IN Predicate and Nested Select:**
-   - **Description:** Formulate an SQL SELECT query using the IN predicate combined with a nested SELECT statement (not IN with a set of constant data).
-   - **Requirements:**
-     - Ensure the script has at least one such query.
-     - Attach an explanatory comment highlighting the query's function and the data it is designed to retrieve.
+6. **Query with IN Predicate and Nested Select:**  
+   _Description:_ Formulate an SQL SELECT query using the IN predicate combined with a nested SELECT statement (not IN with a set of constant data).  
+   _Requirements:_
+   - Ensure the script has at least one such query.
+   - Attach an explanatory comment highlighting the query's function and the data it is designed to retrieve.
 
 **Important Notes:**
 
@@ -151,73 +155,81 @@ Develop an SQL script that first establishes the foundational objects of the dat
 - Comments for each query are crucial for clear understanding and documentation.
 - Queries should be optimized for efficiency and should retrieve accurate data as per the given requirements.
 
-### Evaluation of Task 3 Solution
+### ✅ Evaluation of Task 3 Solution
 
-- OK
+- All requirements met successfully.
 
-Total points: **5/5**
+🟢🟢🟢🟢🟢  
+**Total Points: 5/5**
 
 ---
 
-## Task 4: Advanced SQL Script Creation & Documentation Requirements
+## 📝 Task 4: Advanced SQL Script Creation & Documentation
 
-**Objective:** Develop an SQL script that establishes foundational database schema objects, fills tables with sample data (mirroring the script in [Task 2](#task-2-sql-script-creation-for-database-schema)), and introduces advanced database restrictions or objects as per specified criteria. The script will also demonstrate data manipulation commands and queries to showcase the usage of the restrictions and objects.
+**Objective:** Develop an SQL script that establishes foundational database schema objects, fills tables with sample data mirroring the script in [Task 2](#📜-task-2-sql-script-creation-for-database-schema), and introduces advanced database restrictions or objects as per specified criteria. The script should also illustrate data manipulation commands and queries to showcase the utilization of the restrictions and objects.
 
 **Tasks:**
 
-1. **Initial Setup:**
+1. **Initial Setup:**  
+   _Description:_ Create the foundational database schema objects and populate tables with sample data.  
+   _Requirements:_ Ensure alignment with the script detailed in [Task 2](#📜-task-2-sql-script-creation-for-database-schema).
 
-   - **Description:** Create the basic database schema objects and populate tables with sample data.
-   - **Requirements:** Align with the script described [Task 2](#task-2-sql-script-creation-for-database-schema).
+2. **Database Triggers:**  
+   _Description:_ Design and introduce non-standard database triggers.  
+   _Requirements:_
 
-2. **Database Triggers:**
+   - Implement at least two unique triggers.
+   - Clearly demonstrate the function of each trigger.
 
-   - **Description:** Design and implement non-trivial database triggers.
-   - **Requirements:**
-     - Include at least two such triggers.
-     - Demonstrate each trigger in action.
+3. **Stored Procedures:**  
+   _Description:_ Develop non-standard stored procedures.  
+   _Requirements:_
 
-3. **Stored Procedures:**
+   - Formulate a minimum of two procedures.
+   - The procedures should, in combination, encompass a cursor, exception management, and the employment of a variable with a datatype that refers to a table row or column type (e.g., table_name.column_name%TYPE or table_name%ROWTYPE).
+   - Demonstrate the utility of each procedure.
 
-   - **Description:** Construct non-trivial stored procedures.
-   - **Requirements:**
-     - Create at least two procedures.
-     - These procedures must collectively feature: a cursor, exception handling, and use of a variable with a datatype referring to a table row or column type (`table_name.column_name%TYPE` or `table_name%ROWTYPE`).
-     - Showcase each procedure.
+4. **Index Creation and Optimization:**  
+   _Description:_ Construct an explicit index to enhance query processing efficiency.  
+   _Requirements:_
 
-4. **Index Creation and Optimization:**
+   - Develop at least one distinct index.
+   - Detail the particular query impacted by this index.
+   - Combine the index's utilization in the query with an EXPLAIN PLAN.
 
-   - **Description:** Create an index explicitly to optimize query processing.
-   - **Requirements:**
-     - Develop at least one such index.
-     - Provide the specific query that the index impacts.
-     - Document the index's utilization in the query. This can be combined with an EXPLAIN PLAN.
+5. **EXPLAIN PLAN Usage:**  
+   _Description:_ Utilize the EXPLAIN PLAN for a database query incorporating a two-table join, aggregate function, and a GROUP BY clause.  
+   _Requirements:_
 
-5. **EXPLAIN PLAN Usage:**
+   - Extensively document the execution plan.
+   - Elucidate the techniques employed for query optimization, such as index utility or join type.
+   - Propose and execute a strategy for further query enhancement. Reinitiate the EXPLAIN PLAN and compare outcomes pre and post-optimization.
 
-   - **Description:** Use the EXPLAIN PLAN for a database query with a two-table join, aggregate function, and GROUP BY clause.
-   - **Requirements:**
-     - Thoroughly document the execution plan.
-     - Describe methods used for query optimization (e.g., index usage, join type).
-     - Suggest and implement a strategy for further query acceleration. Rerun the EXPLAIN PLAN and compare results before and after the optimization.
+6. **Access Rights:**  
+   _Description:_ Determine access rights for database entities for another team participant.  
+   _Requirements:_ Ensure these rights are correctly prepared for subsequent tasks.
 
-6. **Access Rights:**
+7. **Materialized View:**  
+   _Description:_ Design a materialized view owned by another team participant that uses tables defined by the first team member.  
+   _Requirements:_
+   - Confirm access rights from the preceding task have been set.
+   - Incorporate SQL instructions/queries that demonstrate the function of the materialized view.
 
-   - **Description:** Define access rights for database objects for another team member.
-   - **Requirements:** Ensure these rights are properly set up for the next task.
+**Documentation Requirements:**
 
-7. **Materialized View:**
+- Describe the ultimate database schema in detail.
+- Elaborate on every solution aspect from the script in [Task 4](#📝-task-4-advanced-sql-script-creation--documentation), including the rationale (for instance, describing the EXPLAIN PLAN output both before and after the creation of an index).
 
-   - **Description:** Design a materialized view belonging to another team member that uses tables defined by the first team member.
-   - **Requirements:**
-     - Ensure access rights have been defined from the previous task.
-     - Include SQL commands/queries that illustrate how the materialized view functions.
+### ✅ Evaluation of Task 4 Solution
 
-8. **Documentation Requirements:**
+- Points deducted for ambiguous documentation.
+- Some SQL commands were missing.
+- Specifics on errors encountered:
+  - Documentation lacked the reasoning behind certain design decisions.
 
-   - Describe the final database schema.
-   - Detail each solution point from the script in [Task 4](#task-4-advanced-sql-script-creation--documentation-requirements), including the rationale (e.g., describing the EXPLAIN PLAN output before and after index creation).
+🟢🟢🟡🔴🔴  
+**Total Points: 10/19**
 
-### Evaluation of Task 4 Solution
+---
 
-Total points: **10/19**
+**🔙 Back to [Table of Contents](#-table-of-contents)**
