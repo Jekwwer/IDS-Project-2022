@@ -84,7 +84,7 @@ Design the Information System (IS) for a video rental service that caters to ren
 
 3. **Generalization/Specialization Relationship:**  
    _Description:_ Accurately reflect the generalization/specialization relationship, suited for a purely relational database. Convert the relationship and relevant data model entities into the database schema.  
-   _Requirements:_ Offer a clear rationale for the methodology adopted in translating the relationship into the relational database schema in the supplementary [documentation](./xshili00_xbrazd22.pdf).
+   _Requirements:_ Offer a clear rationale for the methodology adopted in translating the relationship into the relational database schema in the supplementary [documentation](./submitted-documentation.pdf).
 
 4. **Script Features:**  
    _Description:_ The script should enable the auto-generation of primary key values for a specific table through a sequence.  
