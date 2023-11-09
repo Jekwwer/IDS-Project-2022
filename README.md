@@ -2,7 +2,7 @@
 
 > **University**: [VUT FIT](https://www.fit.vut.cz/)
 >
-> **Course**: [IDS (Database Systems)](https://www.fit.vut.cz/study/course/268224/)
+> **Course**: [Database Systems (IDS)](https://www.fit.vut.cz/study/course/268224/)
 >
 > **Academic Year**: 2021/22
 
